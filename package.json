@@ -1,0 +1,52 @@
+{
+  "name": "chronos-rewards",
+  "version": "1.0.0",
+  "description": "Time-Staged Task Manager with Gamification",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "test:auth": "tsx scripts/test-auth.ts",
+    "test:tasks": "tsx scripts/test-tasks.ts",
+    "test:rewards": "tsx scripts/test-rewards.ts",
+    "test:genres": "tsx scripts/test-genres.ts",
+    "test:all": "npm run test:auth && npm run test:tasks && npm run test:rewards && npm run test:genres"
+  },
+  "dependencies": {
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@supabase/supabase-js": "^2.39.7",
+    "@supabase/auth-helpers-nextjs": "^0.9.0",
+    "zustand": "^4.5.0",
+    "framer-motion": "^11.0.3",
+    "lucide-react": "^0.321.0",
+    "date-fns": "^3.3.1",
+    "react-swipeable": "^7.0.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.1",
+    "next-pwa": "^5.6.0",
+    "dotenv": "^16.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "@types/react": "^18.2.52",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
+    "postcss": "^8.4.33",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
+    "@next/eslint-plugin-next": "^14.1.0",
+    "tsx": "^4.7.0"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

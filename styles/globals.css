@@ -1,0 +1,160 @@
+/**
+ * グローバルCSS
+ * Tailwind CSSのベース、コンポーネント、ユーティリティを読み込み
+ * カスタムCSS変数とグローバルスタイルを定義
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * CSS変数定義
+   * ダークモード専用のカラーパレット
+   */
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 10%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 10%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  /**
+   * ベーススタイル
+   */
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    /* スムーズなフォントレンダリング */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /**
+   * スクロールバーのカスタマイズ（Webkit系ブラウザ）
+   */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+@layer components {
+  /**
+   * カスタムコンポーネントスタイル
+   */
+  
+  /* タスクカードのグラスモーフィズム効果 */
+  .task-card-glass {
+    @apply backdrop-blur-sm bg-card/80 border border-border/50;
+  }
+
+  /* 報酬獲得時のグロー効果 */
+  .reward-glow {
+    animation: glow 1s ease-in-out;
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 5px currentColor;
+    }
+    50% {
+      box-shadow: 0 0 20px currentColor;
+    }
+  }
+
+  /* スタミナバーのグラデーション */
+  .stamina-bar {
+    background: linear-gradient(
+      90deg,
+      hsl(120 60% 50%) 0%,
+      hsl(60 80% 50%) 50%,
+      hsl(0 80% 60%) 100%
+    );
+  }
+
+  /* タスク完了時のチェックマークアニメーション */
+  .checkmark {
+    animation: checkmark-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes checkmark-pop {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+@layer utilities {
+  /**
+   * カスタムユーティリティクラス
+   */
+  
+  /* テキストのグラデーション */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r;
+  }
+
+  /* ゴールドテキスト（コイン） */
+  .text-coin {
+    @apply text-gradient from-yellow-400 via-yellow-500 to-yellow-600;
+  }
+
+  /* クリスタルテキスト */
+  .text-crystal {
+    @apply text-gradient from-purple-400 via-pink-500 to-purple-600;
+  }
+
+  /* タップ可能な要素のアクティブ状態 */
+  .tap-highlight {
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* スワイプ可能要素のヒント */
+  .swipeable {
+    touch-action: pan-y;
+    user-select: none;
+  }
+}
