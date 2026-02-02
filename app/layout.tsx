@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
-import { ToastProvider } from '@/components/ui/toast';
+import { ToastContainer } from '@/components/ui/toast';
 
 /**
  * フォント設定
@@ -24,9 +24,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Chronos Rewards - タスク管理アプリ',
   description: '短期から超長期までのタスクを管理し、ゲーミフィケーション要素で楽しく達成',
-  // PWA用マニフェスト（後で追加）
-  // manifest: '/manifest.json',
-  themeColor: '#0F172A', // ダークモードの背景色
+  themeColor: '#3B82F6',
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -45,17 +43,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja" className="dark">
+    <html lang="ja">
       <body className={inter.className}>
-        {/* 
-          ダークモード専用のため、常にdarkクラスを付与
-          背景色とテキスト色をTailwindのグローバルCSSで設定
-        */}
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="min-h-screen bg-gray-50">
           <AuthProvider>
-            <ToastProvider>
-              {children}
-            </ToastProvider>
+            {children}
+            {/* トースト通知コンテナ */}
+            <ToastContainer />
           </AuthProvider>
         </div>
       </body>

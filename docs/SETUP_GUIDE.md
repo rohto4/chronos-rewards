@@ -243,22 +243,17 @@ Success. No rows returned
 
 6. 承認済みのリダイレクトURI:
    ```
-   https://xxxxxxxxxxxxx.supabase.co/auth/v1/callback
+   https://xxxxxxxxxxxxxxxxxxx.supabase.co/auth/v1/callback
    ```
 
    **重要:** `xxxxxxxxxxxxx`の部分は、Part 1.3で取得したProject URLの値に置き換える
-
-   例:
-   ```
-   https://abcdefghijklmn.supabase.co/auth/v1/callback
-   ```
 
 7. 「作成」をクリック
 
 8. 表示されるダイアログから以下をコピーしてメモ:
    ```
-   クライアントID: 123456789-abc...apps.googleusercontent.com
-   クライアントシークレット: GOCSPX-...
+   クライアントID: 000000000000-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+   クライアントシークレット: GOCSPX-*********************...
    ```
 
 ---
@@ -463,18 +458,18 @@ npm run test:rewards
 
 以下がすべて✅になっていれば、セットアップ完了です！
 
-- [ ] Node.js v22.13.0以上がインストール済み
-- [ ] `npm install`が成功
-- [ ] Supabaseプロジェクトが作成済み
-- [ ] データベースが初期化済み（`supabase-migration.sql`実行）
-- [ ] Google Cloud Consoleプロジェクトが作成済み
-- [ ] OAuth同意画面が設定済み
-- [ ] OAuth認証情報が作成済み
-- [ ] SupabaseにGoogle OAuth情報が設定済み
-- [ ] `.env.local`ファイルが正しく設定済み
-- [ ] `npm run test:auth`が成功（5/5）
-- [ ] `npm run test:rewards`が成功（8/8）
-- [ ] `npm run dev`で開発サーバーが起動
+- [☑] Node.js v22.13.0以上がインストール済み
+- [☑] `npm install`が成功
+- [☑] Supabaseプロジェクトが作成済み
+- [☑] データベースが初期化済み（`supabase-migration.sql`実行）
+- [☑] Google Cloud Consoleプロジェクトが作成済み
+- [☑] OAuth同意画面が設定済み
+- [☑] OAuth認証情報が作成済み
+- [☑] SupabaseにGoogle OAuth情報が設定済み
+- [☑] `.env.local`ファイルが正しく設定済み
+- [☑] `npm run test:auth`が成功（5/5）
+- [☑] `npm run test:rewards`が成功（8/8）
+- [☑] `npm run dev`で開発サーバーが起動
 - [ ] ブラウザで http://localhost:3000 にアクセス可能
 - [ ] Googleログインが成功
 
