@@ -67,6 +67,12 @@
 - **date-fns Locale (日本語対応)**
   https://date-fns.org/docs/I18n
 
+## 7.5. Charts & Data Visualization
+- **Recharts (React向けチャートライブラリ)**
+  https://recharts.org/
+- **Recharts Examples**
+  https://recharts.org/en-US/examples
+
 ## 8. Drag & Drop / Swipe
 - **react-swipeable (スワイプ操作)**
   https://github.com/FormidableLabs/react-swipeable
@@ -159,3 +165,18 @@
 - RewardAnimation (報酬獲得演出)
 - LevelUpAnimation (レベルアップ演出)
 - StaminaRecoveryEffect (スタミナ回復通知)
+
+### Phase 8: 追加機能
+- Calendar (月間カレンダー表示、date-fns統合)
+- CalendarPage (カレンダービュー、選択日のタスク一覧)
+- StatisticsPage (統計ダッシュボード、期間別集計)
+- Chart (Recharts統合: BarChart, LineChart, PieChart, AreaChart)
+- useTheme (ダークモード切り替えフック、localStorage永続化)
+- ThemeProvider (テーマ管理プロバイダー)
+- export-utils (CSV/JSONエクスポート機能)
+
+### Phase 9: 品質向上
+- Vitest (ユニットテスト: 73テスト作成)
+- 動的インポート (next/dynamic: TaskDetailModal, RewardAnimation, Calendar)
+- アクセシビリティ対応 (aria属性、キーボードナビゲーション)
+- テストカバレッジ: reward-utils 100%

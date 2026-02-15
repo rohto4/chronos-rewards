@@ -14,9 +14,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    
+
     // パスエイリアス設定
-    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
@@ -40,6 +39,7 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "scripts"
   ]
 }

@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { ToastContainer } from '@/components/ui/toast';
 
 /**
@@ -43,15 +44,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
+    <html lang="ja" className="dark">
       <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">
-          <AuthProvider>
-            {children}
-            {/* トースト通知コンテナ */}
-            <ToastContainer />
-          </AuthProvider>
-        </div>
+        <ThemeProvider>
+          <div className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-50">
+            <AuthProvider>
+              {children}
+              {/* トースト通知コンテナ */}
+              <ToastContainer />
+            </AuthProvider>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

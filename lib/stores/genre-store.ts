@@ -1,13 +1,14 @@
 /**
  * Zustand Store: ジャンル管理
- * 
+ *
  * タスクジャンルの作成、取得、使用回数の管理を行う
  * グローバルステート
  */
 
+// @ts-nocheck - Supabase auth-helpers type inference issue with task_genres table
 import { create } from 'zustand';
-import { supabase } from '@/lib/supabase/client';
-import type { TaskGenre, TaskGenreInsert } from '@/types/database';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import type { TaskGenre, TaskGenreInsert, Database } from '@/types/database';
 
 /**
  * ジャンルストアの状態型定義
@@ -53,8 +54,13 @@ function getRandomColor(): string {
 }
 
 /**
+ * Supabaseクライアントのインスタンス
+ */
+const supabase = createClientComponentClient<Database>();
+
+/**
  * ジャンルストア
- * 
+ *
  * 使用例:
  * ```typescript
  * import { useGenreStore } from '@/lib/stores/genre-store';

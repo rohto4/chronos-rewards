@@ -114,6 +114,15 @@ export const TaskCard = ({
           task.is_completed && 'opacity-60'
         )}
         onClick={onClick}
+        onKeyDown={(e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && onClick) {
+            e.preventDefault();
+            onClick();
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`タスク: ${task.title}。期限: ${deadlineStatus.label}。${task.is_completed ? '完了済み' : '未完了'}`}
       >
         <CardBody className="space-y-3">
           {/* ヘッダー行: ジャンル + 期限 */}

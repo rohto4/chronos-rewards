@@ -12,6 +12,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useUserStore } from '@/lib/stores/user-store';
 import { useTaskStore } from '@/lib/stores/task-store';
@@ -20,9 +21,26 @@ import { Header } from '@/components/layout/Header';
 import { FilterChips } from '@/components/layout/FilterChips';
 import { QuickAddButtons } from '@/components/layout/QuickAddButtons';
 import { TaskCard } from '@/components/tasks/TaskCard';
-import { RewardAnimation } from '@/components/animations/RewardAnimation';
 import { useToast } from '@/components/ui/toast';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// 動的インポート: 使用頻度が低いコンポーネント
+const TaskDetailModal = dynamic(
+  () => import('@/components/tasks/TaskDetailModal').then(mod => ({ default: mod.TaskDetailModal })),
+  {
+    loading: () => (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="text-white">読み込み中...</div>
+      </div>
+    ),
+    ssr: false
+  }
+);
+
+const RewardAnimation = dynamic(
+  () => import('@/components/animations/RewardAnimation').then(mod => ({ default: mod.RewardAnimation })),
+  { ssr: false }
+);
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -38,6 +56,30 @@ export default function DashboardPage() {
     amount: number;
   } | null>(null);
 
+  // タスク詳細モーダル
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+
+  /**
+   * デバッグ: 認証状態確認
+   */
+  useEffect(() => {
+    console.log('🔐 認証状態:', {
+      user: user ? { id: user.id, email: user.email } : null,
+      authLoading,
+    });
+  }, [user, authLoading]);
+
+  /**
+   * AuthProviderのuserをuseUserStoreに設定
+   */
+  useEffect(() => {
+    const { setUser } = useUserStore.getState();
+    if (user) {
+      console.log('👤 useUserStoreにユーザー設定:', user.id);
+      setUser(user);
+    }
+  }, [user]);
+
   /**
    * 認証チェック
    */
@@ -51,11 +93,22 @@ export default function DashboardPage() {
    * 初期化処理
    */
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      console.log('⚠️ ユーザー未認証のため初期化スキップ');
+      return;
+    }
 
+    console.log('🚀 初期化処理開始');
+    console.log('📞 fetchProfile() 呼び出し');
     fetchProfile();
+    
+    console.log('📞 recoverStamina() 呼び出し');
     recoverStamina();
+    
+    console.log('📞 fetchTasks() 呼び出し');
     fetchTasks();
+    
+    console.log('📞 fetchGenres() 呼び出し');
     fetchGenres();
 
     // 定期的にスタミナ回復
@@ -67,16 +120,31 @@ export default function DashboardPage() {
   }, [user, fetchProfile, recoverStamina, fetchTasks, fetchGenres]);
 
   /**
+   * デバッグ: プロフィール確認
+   */
+  useEffect(() => {
+    console.log('🔍 プロフィール状態:', profile);
+    if (profile) {
+      console.log('✅ スタミナ:', profile.current_stamina, '/', profile.max_stamina);
+      console.log('💰 コイン:', profile.total_coins);
+      console.log('💎 クリスタル:', profile.total_crystals);
+    } else {
+      console.log('❌ プロフィールが未取得');
+    }
+  }, [profile]);
+
+  /**
    * タスク完了処理
    */
   const handleCompleteTask = async (taskId: string) => {
     try {
-      await completeTask(taskId);
-      
+      const result = await completeTask(taskId);
+
       // クリスタル獲得アニメーション
-      // TODO: 実際のクリスタル数を計算
-      setRewardAnimation({ type: 'crystal', amount: 50 });
-      
+      if (result && result.crystalReward > 0) {
+        setRewardAnimation({ type: 'crystal', amount: result.crystalReward });
+      }
+
       showToast('タスクを完了しました！', 'success');
     } catch (error) {
       console.error('Complete task error:', error);
@@ -142,9 +210,7 @@ export default function DashboardPage() {
                   task={task}
                   onComplete={handleCompleteTask}
                   onDelete={handleDeleteTask}
-                  onClick={() => {
-                    // TODO: タスク詳細表示
-                  }}
+                  onClick={() => setSelectedTaskId(task.id)}
                 />
               ))
             )}
@@ -154,6 +220,15 @@ export default function DashboardPage() {
 
       {/* クイック登録ボタン */}
       <QuickAddButtons />
+
+      {/* タスク詳細モーダル */}
+      <TaskDetailModal
+        taskId={selectedTaskId}
+        isOpen={selectedTaskId !== null}
+        onClose={() => setSelectedTaskId(null)}
+        onComplete={handleCompleteTask}
+        onDelete={handleDeleteTask}
+      />
 
       {/* 報酬獲得アニメーション */}
       <AnimatePresence>

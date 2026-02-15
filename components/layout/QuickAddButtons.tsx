@@ -12,11 +12,12 @@
 import { useState } from 'react';
 import { Plus, Zap, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { endOfDay, endOfWeek } from 'date-fns';
 import { Modal } from '@/components/ui/Modal';
 import { TaskForm } from '@/components/tasks/TaskForm';
 import { useTaskStore } from '@/lib/stores/task-store';
 import { useToast } from '@/components/ui/toast';
-import type { TaskInsert } from '@/types/database';
+import type { TaskInsert, TaskUpdate } from '@/types/database';
 
 /**
  * QuickAddButtonsコンポーネント
@@ -24,18 +25,26 @@ import type { TaskInsert } from '@/types/database';
 export const QuickAddButtons = () => {
   const { createTask } = useTaskStore();
   const { showToast } = useToast();
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [initialDeadline, setInitialDeadline] = useState<string | null>(null);
 
   /**
    * タスク作成処理
    */
-  const handleCreateTask = async (taskData: TaskInsert) => {
+  const handleCreateTask = async (taskData: TaskInsert | TaskUpdate) => {
     try {
-      await createTask(taskData);
+      const result = await createTask(taskData as TaskInsert);
       setIsModalOpen(false);
-      showToast('タスクを作成しました', 'success');
+      setInitialDeadline(null); // 期限をクリア
+
+      // コイン獲得通知
+      if (result && result.coinReward > 0) {
+        showToast(`タスクを作成しました！ 💰 +${result.coinReward}コイン`, 'success');
+      } else {
+        showToast('タスクを作成しました', 'success');
+      }
     } catch (error) {
       console.error('Create task error:', error);
       showToast('タスクの作成に失敗しました', 'error');
@@ -46,6 +55,8 @@ export const QuickAddButtons = () => {
    * クイックタスク作成（今日締切）
    */
   const handleQuickAddToday = () => {
+    const today = endOfDay(new Date());
+    setInitialDeadline(today.toISOString());
     setIsModalOpen(true);
     setIsExpanded(false);
   };
@@ -54,6 +65,8 @@ export const QuickAddButtons = () => {
    * クイックタスク作成（今週締切）
    */
   const handleQuickAddWeek = () => {
+    const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
+    setInitialDeadline(weekEnd.toISOString());
     setIsModalOpen(true);
     setIsExpanded(false);
   };
@@ -136,13 +149,20 @@ export const QuickAddButtons = () => {
       {/* タスク作成モーダル */}
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setInitialDeadline(null); // 期限をクリア
+        }}
         title="新しいタスクを作成"
         size="lg"
       >
         <TaskForm
+          initialDeadline={initialDeadline}
           onSubmit={handleCreateTask}
-          onCancel={() => setIsModalOpen(false)}
+          onCancel={() => {
+            setIsModalOpen(false);
+            setInitialDeadline(null); // 期限をクリア
+          }}
         />
       </Modal>
     </>

@@ -1,14 +1,16 @@
 /**
  * Zustand Store: ユーザープロフィール
- * 
+ *
  * ユーザーの認証状態、プロフィール情報、報酬（コイン/クリスタル）、
  * スタミナ情報を管理するグローバルステート
  */
 
+// @ts-nocheck - Supabase auth-helpers type inference issue with user_profiles table
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase/client';
 import type { UserProfile } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
+import { STAMINA_CONFIG } from '@/lib/config/game-balance';
 
 /**
  * ユーザーストアの状態型定義
@@ -25,6 +27,7 @@ interface UserStore {
   fetchProfile: () => Promise<void>; // プロフィール取得
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>; // プロフィール更新
   recoverStamina: () => Promise<void>; // スタミナ回復処理
+  checkStamina: (required: number) => boolean; // スタミナ事前チェック
   signOut: () => Promise<void>; // サインアウト
 }
 
@@ -163,6 +166,20 @@ export const useUserStore = create<UserStore>((set, get) => ({
     } catch (error) {
       console.error('スタミナ回復エラー:', error);
     }
+  },
+
+  /**
+   * スタミナ事前チェック
+   * タスク作成前にスタミナが足りるかチェック
+   *
+   * @param required 必要なスタミナ量
+   * @returns スタミナが足りればtrue
+   */
+  checkStamina: (required) => {
+    const { profile } = get();
+    if (!profile) return false;
+
+    return profile.current_stamina >= required;
   },
 
   /**

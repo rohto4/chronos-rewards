@@ -12,6 +12,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Check } from 'lucide-react';
 import { useGenreStore } from '@/lib/stores/genre-store';
+import { supabase } from '@/lib/supabase/client';
 import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -62,7 +63,14 @@ export const GenreSelector = ({ value, onChange }: GenreSelectorProps) => {
     setIsCreating(true);
 
     try {
+      // ユーザーIDを取得
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        throw new Error('ユーザーが認証されていません');
+      }
+
       const newGenre = await createGenre({
+        user_id: userData.user.id,
         name: newGenreName.trim(),
         color: selectedColor,
       });

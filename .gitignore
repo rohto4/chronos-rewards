@@ -49,4 +49,11 @@ Thumbs.db
 
 # private memo
 memo_private.txt
+secret/.claude/
+count_lines.bat
+
+# Claude Code local settings
+.claude/
+
+# Secret files
 secret/

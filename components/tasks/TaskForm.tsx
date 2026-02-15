@@ -26,6 +26,7 @@ import { useUserStore } from '@/lib/stores/user-store';
  */
 export interface TaskFormProps {
   task?: TaskWithGenre | null;
+  initialDeadline?: string | null; // クイック登録からの初期期限
   onSubmit: (task: TaskInsert | TaskUpdate) => Promise<void>;
   onCancel: () => void;
 }
@@ -33,7 +34,7 @@ export interface TaskFormProps {
 /**
  * TaskFormコンポーネント
  */
-export const TaskForm = ({ task, onSubmit, onCancel }: TaskFormProps) => {
+export const TaskForm = ({ task, initialDeadline, onSubmit, onCancel }: TaskFormProps) => {
   const { profile } = useUserStore();
 
   // フォーム状態
@@ -41,7 +42,9 @@ export const TaskForm = ({ task, onSubmit, onCancel }: TaskFormProps) => {
   const [description, setDescription] = useState(task?.description ?? '');
   const [genreId, setGenreId] = useState(task?.genre_id ?? null);
   const [deadline, setDeadline] = useState(
-    task?.deadline ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+    task?.deadline ??
+    initialDeadline ??
+    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   );
   const [estimatedHours, setEstimatedHours] = useState(
     task?.estimated_hours?.toString() ?? '1'

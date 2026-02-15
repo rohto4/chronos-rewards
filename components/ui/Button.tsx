@@ -21,11 +21,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 active:bg-blue-800',
-        secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 active:bg-gray-800',
-        outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500 active:bg-blue-100',
-        ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-400 active:bg-gray-200',
-        danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800',
+        primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 active:bg-blue-800 dark:bg-blue-500 dark:hover:bg-blue-600 dark:active:bg-blue-700',
+        secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 active:bg-gray-800 dark:bg-slate-700 dark:hover:bg-slate-600 dark:active:bg-slate-800',
+        outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500 active:bg-blue-100 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950/30 dark:active:bg-blue-950/50',
+        ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-400 active:bg-gray-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700',
+        danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800 dark:bg-red-500 dark:hover:bg-red-600 dark:active:bg-red-700',
       },
       size: {
         sm: 'h-9 px-3 text-sm',
@@ -85,6 +85,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         className={cn(buttonVariants({ variant, size, className }))}
         disabled={disabled || isLoading}
+        aria-busy={isLoading}
+        aria-disabled={disabled || isLoading}
         {...props}
       >
         {/* ローディングスピナー */}

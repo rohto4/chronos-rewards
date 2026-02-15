@@ -1,5 +1,5 @@
 /**
- * Inputコンポーネント
+ * Inputコンポーネント（ダークモード対応）
  * 
  * テキスト入力フィールド
  * - バリデーションエラー表示
@@ -23,16 +23,6 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 /**
  * Inputコンポーネント
- * 
- * 使用例:
- * ```tsx
- * <Input
- *   label="タスク名"
- *   placeholder="タスクを入力"
- *   error="タスク名は必須です"
- *   leftIcon={<SearchIcon />}
- * />
- * ```
  */
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
@@ -50,14 +40,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const hasError = !!error;
+    const inputId = props.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const errorId = `${inputId}-error`;
+    const helperId = `${inputId}-helper`;
 
     return (
       <div className="w-full">
         {/* ラベル */}
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-red-400 ml-1">*</span>}
           </label>
         )}
 
@@ -65,7 +58,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative">
           {/* 左アイコン */}
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
               {leftIcon}
             </div>
           )}
@@ -73,26 +66,30 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {/* インプット */}
           <input
             ref={ref}
+            id={inputId}
             type={type}
             className={cn(
               'w-full h-11 px-4 rounded-lg border transition-all duration-200',
-              'text-gray-900 placeholder:text-gray-400',
-              'focus:outline-none focus:ring-2 focus:ring-offset-0',
+              'bg-slate-900 text-slate-50 placeholder:text-slate-500',
+              'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-offset-slate-950',
               leftIcon && 'pl-10',
               rightIcon && 'pr-10',
               hasError
                 ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500',
-              disabled && 'bg-gray-50 cursor-not-allowed opacity-60',
+                : 'border-slate-700 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-600',
+              disabled && 'bg-slate-800 cursor-not-allowed opacity-60',
               className
             )}
             disabled={disabled}
+            aria-invalid={hasError}
+            aria-describedby={hasError ? errorId : helperText ? helperId : undefined}
+            aria-required={props.required}
             {...props}
           />
 
           {/* 右アイコン */}
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
               {rightIcon}
             </div>
           )}
@@ -100,12 +97,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {/* エラーメッセージ */}
         {hasError && (
-          <p className="mt-1.5 text-sm text-red-600">{error}</p>
+          <p id={errorId} className="mt-1.5 text-sm text-red-400" role="alert">
+            {error}
+          </p>
         )}
 
         {/* ヘルパーテキスト */}
         {!hasError && helperText && (
-          <p className="mt-1.5 text-sm text-gray-500">{helperText}</p>
+          <p id={helperId} className="mt-1.5 text-sm text-slate-400">
+            {helperText}
+          </p>
         )}
       </div>
     );

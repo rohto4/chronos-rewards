@@ -57,13 +57,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {/* ラベル */}
         {label && (
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               {label}
-              {props.required && <span className="text-red-500 ml-1">*</span>}
+              {props.required && <span className="text-red-500 dark:text-red-400 ml-1">*</span>}
             </label>
             {/* 文字数カウンター */}
             {showCount && maxLength && (
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 dark:text-slate-400">
                 {currentLength} / {maxLength}
               </span>
             )}
@@ -75,13 +75,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           className={cn(
             'w-full px-4 py-3 rounded-lg border transition-all duration-200',
-            'text-gray-900 placeholder:text-gray-400',
-            'focus:outline-none focus:ring-2 focus:ring-offset-0',
+            'text-gray-900 dark:text-slate-50 placeholder:text-gray-400 dark:placeholder:text-slate-500',
+            'bg-white dark:bg-slate-900',
+            'focus:outline-none focus:ring-2 focus:ring-offset-0 dark:focus:ring-offset-slate-950',
             'resize-y min-h-[100px]',
             hasError
               ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500',
-            disabled && 'bg-gray-50 cursor-not-allowed opacity-60',
+              : 'border-gray-300 dark:border-slate-700 focus:ring-blue-500 focus:border-blue-500 dark:hover:border-slate-600',
+            disabled && 'bg-gray-50 dark:bg-slate-800 cursor-not-allowed opacity-60',
             className
           )}
           value={value}
@@ -92,12 +93,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
         {/* エラーメッセージ */}
         {hasError && (
-          <p className="mt-1.5 text-sm text-red-600">{error}</p>
+          <p className="mt-1.5 text-sm text-red-600 dark:text-red-400">{error}</p>
         )}
 
         {/* ヘルパーテキスト */}
         {!hasError && helperText && (
-          <p className="mt-1.5 text-sm text-gray-500">{helperText}</p>
+          <p className="mt-1.5 text-sm text-gray-500 dark:text-slate-400">{helperText}</p>
         )}
       </div>
     );

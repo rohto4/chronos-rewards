@@ -125,30 +125,30 @@ export const Modal = ({
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              'relative bg-white rounded-xl shadow-2xl w-full overflow-hidden',
+              'relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full overflow-hidden',
               sizeClasses[size]
             )}
           >
             {/* ヘッダー */}
             {(title || showCloseButton) && (
-              <div className="flex items-start justify-between px-6 py-4 border-b border-gray-200">
+              <div className="flex items-start justify-between px-6 py-4 border-b border-gray-200 dark:border-slate-800">
                 <div className="flex-1">
                   {title && (
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-50">
                       {title}
                     </h2>
                   )}
                   {description && (
-                    <p className="mt-1 text-sm text-gray-600">{description}</p>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">{description}</p>
                   )}
                 </div>
                 {showCloseButton && (
                   <button
                     onClick={onClose}
-                    className="ml-4 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="ml-4 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
                     aria-label="閉じる"
                   >
-                    <X className="w-5 h-5 text-gray-500" />
+                    <X className="w-5 h-5 text-gray-500 dark:text-slate-400" />
                   </button>
                 )}
               </div>

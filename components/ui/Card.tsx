@@ -1,131 +1,139 @@
 /**
- * Cardコンポーネント
+ * Cardコンポーネント（ダークモード対応）
  * 
- * コンテンツをグループ化するカードUI
- * - ヘッダー（タイトル・説明）
- * - ボディ（メインコンテンツ）
- * - フッター（アクション）
+ * カード型コンテナ
+ * - Header/Body/Footerの構造
+ * - バリアント対応
  */
 
-import { HTMLAttributes, forwardRef } from 'react';
+import { forwardRef, HTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
- * Card - ルートコンポーネント
+ * Cardコンポーネントのプロパティ型
  */
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'outline' | 'ghost';
 }
 
+/**
+ * Cardコンポーネント
+ */
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant = 'default', ...props }, ref) => {
-    const variantClasses = {
-      default: 'bg-white border border-gray-200 shadow-sm',
-      outline: 'border-2 border-gray-300',
-      ghost: 'bg-transparent',
-    };
-
+  ({ className, variant = 'default', children, ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={cn(
-          'rounded-xl overflow-hidden',
-          variantClasses[variant],
+          'rounded-xl transition-all duration-200',
+          {
+            'default': 'bg-slate-900 border border-slate-800 shadow-xl',
+            'outline': 'bg-transparent border-2 border-slate-700',
+            'ghost': 'bg-slate-900/50 backdrop-blur-sm border border-slate-800/50',
+          }[variant],
           className
         )}
         {...props}
-      />
+      >
+        {children}
+      </div>
     );
   }
 );
+
 Card.displayName = 'Card';
 
 /**
- * CardHeader - カードヘッダー
+ * CardHeaderコンポーネント
  */
-export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {}
-
-export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
-  ({ className, ...props }, ref) => {
+export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={cn('px-6 py-4 border-b border-gray-100', className)}
+        className={cn('p-6 border-b border-slate-800', className)}
         {...props}
-      />
+      >
+        {children}
+      </div>
     );
   }
 );
+
 CardHeader.displayName = 'CardHeader';
 
 /**
- * CardTitle - カードタイトル
+ * CardTitleコンポーネント
  */
-export interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
-
-export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ className, ...props }, ref) => {
+export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, children, ...props }, ref) => {
     return (
       <h3
         ref={ref}
-        className={cn('text-lg font-semibold text-gray-900', className)}
+        className={cn('text-xl font-semibold text-slate-50', className)}
         {...props}
-      />
+      >
+        {children}
+      </h3>
     );
   }
 );
+
 CardTitle.displayName = 'CardTitle';
 
 /**
- * CardDescription - カード説明文
+ * CardDescriptionコンポーネント
  */
-export interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
-
-export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
-  ({ className, ...props }, ref) => {
+export const CardDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, children, ...props }, ref) => {
     return (
       <p
         ref={ref}
-        className={cn('mt-1 text-sm text-gray-600', className)}
+        className={cn('text-sm text-slate-400 mt-1.5', className)}
         {...props}
-      />
+      >
+        {children}
+      </p>
     );
   }
 );
+
 CardDescription.displayName = 'CardDescription';
 
 /**
- * CardBody - カードボディ
+ * CardBodyコンポーネント
  */
-export interface CardBodyProps extends HTMLAttributes<HTMLDivElement> {}
-
-export const CardBody = forwardRef<HTMLDivElement, CardBodyProps>(
-  ({ className, ...props }, ref) => {
+export const CardBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={cn('px-6 py-4', className)}
+        className={cn('p-6', className)}
         {...props}
-      />
+      >
+        {children}
+      </div>
     );
   }
 );
+
 CardBody.displayName = 'CardBody';
 
 /**
- * CardFooter - カードフッター
+ * CardFooterコンポーネント
  */
-export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {}
-
-export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
-  ({ className, ...props }, ref) => {
+export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={cn('px-6 py-4 border-t border-gray-100 flex items-center gap-2', className)}
+        className={cn('p-6 border-t border-slate-800', className)}
         {...props}
-      />
+      >
+        {children}
+      </div>
     );
   }
 );
+
 CardFooter.displayName = 'CardFooter';

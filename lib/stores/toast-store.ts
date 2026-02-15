@@ -11,9 +11,9 @@ import { create } from 'zustand';
  */
 export interface Toast {
   id: string;
-  title?: string;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
   description?: string;
-  variant?: 'default' | 'destructive' | 'success';
   duration?: number; // ミリ秒
 }
 
@@ -58,7 +58,7 @@ export const useToastStore = create<ToastStore>((set) => ({
     const duration = toast.duration ?? 3000; // デフォルト3秒
 
     set((state) => ({
-      toasts: [...state.toasts, { ...toast, id }],
+      toasts: [...state.toasts, { ...toast, id, duration }],
     }));
 
     // 自動削除タイマー
@@ -92,25 +92,32 @@ export const useToastStore = create<ToastStore>((set) => ({
  * 便利なヘルパー関数
  */
 export const toast = {
-  success: (title: string, description?: string) => {
+  success: (message: string, description?: string) => {
     useToastStore.getState().addToast({
-      title,
+      message,
+      type: 'success',
       description,
-      variant: 'success',
     });
   },
-  error: (title: string, description?: string) => {
+  error: (message: string, description?: string) => {
     useToastStore.getState().addToast({
-      title,
+      message,
+      type: 'error',
       description,
-      variant: 'destructive',
     });
   },
-  info: (title: string, description?: string) => {
+  info: (message: string, description?: string) => {
     useToastStore.getState().addToast({
-      title,
+      message,
+      type: 'info',
       description,
-      variant: 'default',
+    });
+  },
+  warning: (message: string, description?: string) => {
+    useToastStore.getState().addToast({
+      message,
+      type: 'warning',
+      description,
     });
   },
 };

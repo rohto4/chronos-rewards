@@ -78,8 +78,8 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
         {/* ラベル */}
         {showLabel && (
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">進捗</span>
-            <span className="text-sm font-semibold text-gray-900">
+            <span className="text-sm font-medium text-gray-700 dark:text-slate-300">進捗</span>
+            <span className="text-sm font-semibold text-gray-900 dark:text-slate-50">
               {Math.round(percentage)}%
             </span>
           </div>
@@ -89,7 +89,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
         <div
           ref={ref}
           className={cn(
-            'w-full bg-gray-200 rounded-full overflow-hidden',
+            'w-full bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden',
             sizeClasses[size],
             className
           )}
