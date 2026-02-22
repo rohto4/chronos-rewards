@@ -61,6 +61,8 @@ docs/implementation/
 └── active-tasks.json
 ```
 
+テスト運用時は `docs/implementation/active-tasks.test.json` を使用。
+
 ### active-tasks.json の構造
 
 `docs/implementation/active-tasks.json`

@@ -14,6 +14,7 @@
 - `docs/implementation/IMPLEMENTATION_STATUS.md`（現状と既知課題の正本）
 - `docs/implementation/implementation-plan.md`（次にやることの一覧）
 - `docs/implementation/active-tasks.json`（担当と進行状況の共有）
+- `docs/implementation/active-tasks.test.json`（チームエージェント動作テスト用）
 
 ## 仕様・設計
 
