@@ -1,39 +1,44 @@
-# Owner Tasks (Auth priority)
+# オーナー対応タスク（Auth 優先）
 
-This file tracks tasks that require the project owner to act directly.
-Update this list as the auth plan evolves.
+このファイルは、**オーナーのみが対応できる作業**を追跡します。
+Auth 周辺の状況が変わったら更新してください。
 
-## 1. Supabase Auth settings
-- Enable Email auth in Supabase project.
-- Decide email auth mode:
-  - Password + email confirmation, or
-  - Magic link (passwordless).
-- Configure email templates (signup, magic link, reset) if needed.
-- Verify redirect URLs for dev and prod.
+## 1. Supabase Auth 設定
 
-## 2. Google OAuth settings
-- Create Google OAuth client (web).
-- Register authorized redirect URIs for Supabase:
+- Supabase プロジェクトで Email 認証を有効化
+- Email 認証モードの決定
+  - パスワード + メール確認
+  - またはマジックリンク（パスワードレス）
+- メールテンプレートの設定（signup / magic link / reset）
+- 開発/本番のリダイレクト URL を確認
+
+## 2. Google OAuth 設定
+
+- Google OAuth クライアント（Web）を作成
+- Supabase のコールバック URL を登録
   - https://<your-supabase-project>.supabase.co/auth/v1/callback
-- Add authorized JavaScript origins:
+- 許可済み JavaScript オリジン
   - http://localhost:3000
   - https://<your-prod-domain>
-- Set client ID/secret in Supabase Auth Provider settings.
+- Supabase Auth Provider に Client ID / Secret を設定
 
-## 3. Environment variables
-- Provide values for:
+## 3. 環境変数
+
+- 以下の値を用意
   - NEXT_PUBLIC_SUPABASE_URL
   - NEXT_PUBLIC_SUPABASE_ANON_KEY
-  - SUPABASE_SERVICE_ROLE_KEY (if used on server only)
-- Ensure Vercel env vars match local.
+  - SUPABASE_SERVICE_ROLE_KEY（サーバーのみで使う場合）
+- Vercel の環境変数がローカルと一致していることを確認
 
-## 4. Domain and redirect policy
-- Confirm production domain (Vercel) and any custom domain.
-- Confirm auth callback routes used by app:
+## 4. ドメインとリダイレクト方針
+
+- 本番ドメイン（Vercel / カスタムドメイン）を確定
+- アプリ側のコールバックルートを確認
   - /auth/callback
   - /login, /signup
-- Share final list of redirect URLs for all environments.
+- 全環境のリダイレクト URL 一覧を共有
 
-## 5. Security policy decisions
-- Decide whether to require email confirmation before login.
-- Decide session duration and refresh behavior (Supabase defaults vs custom).
+## 5. セキュリティ方針
+
+- メール確認を必須にするか
+- セッション有効期限とリフレッシュ方針

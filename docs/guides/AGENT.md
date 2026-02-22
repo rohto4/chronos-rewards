@@ -1,9 +1,10 @@
 ・日本語で対応してください。
 ・このプロジェクトではドキュメント駆動開発をしています。DDD.mdとtech-stack.mdを最重要視してください。
 ・作業開始時に必ず参照すること:
+  - docs/README.md
   - docs/guides/DDD.md
   - docs/guides/tech-stack.md
-  - .locks/tasks/active-tasks.json
+  - docs/implementation/active-tasks.json
   - docs/implementation/implementation-plan.md
   - docs/implementation/IMPLEMENTATION_STATUS.md
   - docs/guides/MODEL_USAGE.md

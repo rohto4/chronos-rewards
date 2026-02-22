@@ -29,7 +29,7 @@
       "model": "anthropic/claude-sonnet-4-5-20250929",
       "temperature": 0.5,
       "fallback_models": ["anthropic/claude-haiku-4-5-20250929"],
-      "prompt_append": "あなたはプランナーです。コードを一切書かず、タスク分解・計画立案・サブエージェントへの委譲のみを担当してください。実装は必ず sisyphus（deep カテゴリ）に委譲し、調査は librarian に委譲してください。並列実行は控えめにして、トークン効率最重視でお願いします。出力は日本語のみ。英語は禁止。",
+      "prompt_append": "あなたはプランナーです。コードを一切書かず、タスク分解・計画立案・サブエージェントへの委譲のみを担当してください。実装は必ず sisyphus（deep カテゴリ）に委譲し、調査は librarian に委譲してください。並列実行は控えめにして、トークン効率最重視でお願いします。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
       "permission": {
         "edit": "deny"
       }
@@ -44,7 +44,7 @@
       "model": "openai/gpt-5.2-codex",
       "temperature": 0.5,
       "fallback_models": ["openai/gpt-5.1-codex-mini"],
-      "prompt_append": "あなたはオーケストレーターです。Prometheus のプランに従い、各サブエージェントへタスクを割り当て・進捗管理してください。自分でコードを書くのは最小限に留め、適切なカテゴリ（deep/quick/logic-testing/e2e-testing/visual-engineering）に委譲してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "あなたはオーケストレーターです。Prometheus のプランに従い、各サブエージェントへタスクを割り当て・進捗管理してください。自分でコードを書くのは最小限に留め、適切なカテゴリ（deep/quick/logic-testing/e2e-testing/visual-engineering）に委譲してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -56,7 +56,7 @@
       "model": "openai/gpt-5.1-codex-mini",
       "temperature": 0.5,
       "fallback_models": ["openai/gpt-5.2-codex"],
-      "prompt_append": "あなたは実装エージェントです。与えられたタスクをコードで完遂してください。調査が必要な場合は librarian カテゴリに委譲し、型チェック・テスト実行を必ず行ってください。docs/guides/AGENT.md・DDD.md の規約を遵守してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "あなたは実装エージェントです。与えられたタスクをコードで完遂してください。調査が必要な場合は librarian カテゴリに委譲し、型チェック・テスト実行を必ず行ってください。docs/guides/AGENT.md・DDD.md の規約を遵守してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -68,7 +68,7 @@
       "model": "openai/gpt-5.2-codex",
       "temperature": 0.3,
       "fallback_models": ["openai/gpt-5.1-codex-mini"],
-      "prompt_append": "あなたはリファクタリング専門家です。LSP と AST-Grep を最大限活用し、動作を変えずにコード品質・保守性を向上させてください。リファクタリング前後で必ず型チェック・テストを実行し、動作が変わっていないことを確認してください。コードの圧縮・難読化は禁止です。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "あなたはリファクタリング専門家です。LSP と AST-Grep を最大限活用し、動作を変えずにコード品質・保守性を向上させてください。リファクタリング前後で必ず型チェック・テストを実行し、動作が変わっていないことを確認してください。コードの圧縮・難読化は禁止です。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -80,7 +80,7 @@
       "model": "anthropic/claude-haiku-4-5-20250929",
       "temperature": 0.3,
       "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
-      "prompt_append": "あなたは調査専門家です。コードベース検索・公式ドキュメント参照・差分確認を担当してください。コードの変更は行わず、調査結果を簡潔に報告することに集中してください。出力は日本語のみ。英語は禁止。",
+      "prompt_append": "あなたは調査専門家です。コードベース検索・公式ドキュメント参照・差分確認を担当してください。コードの変更は行わず、調査結果を簡潔に報告することに集中してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
       "permission": {
         "edit": "deny"
       }
@@ -95,7 +95,7 @@
       "model": "anthropic/claude-haiku-4-5-20250929",
       "temperature": 0.1,
       "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
-      "prompt_append": "あなたは高速検索エージェントです。ファイル・パターン検索のみを担当します。コードの変更は一切行わないでください。出力は日本語のみ。英語は禁止。",
+      "prompt_append": "あなたは高速検索エージェントです。ファイル・パターン検索のみを担当します。コードの変更は一切行わないでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
       "permission": {
         "edit": "deny",
         "bash": { "grep": "allow", "find": "allow", "ls": "allow", "cat": "allow" }
@@ -111,7 +111,7 @@
       "model": "anthropic/claude-sonnet-4-5-20250929",
       "temperature": 0.6,
       "fallback_models": ["anthropic/claude-haiku-4-5-20250929"],
-      "prompt_append": "あなたは設計判断レビュー専門家です。アーキテクチャの妥当性・型安全性・DDD原則への準拠・パフォーマンス上のリスクをレビューしてください。docs/guides/DDD.md・tech-stack.md を常に参照し、設計の一貫性を保証してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "あなたは設計判断レビュー専門家です。アーキテクチャの妥当性・型安全性・DDD原則への準拠・パフォーマンス上のリスクをレビューしてください。docs/guides/DDD.md・tech-stack.md を常に参照し、設計の一貫性を保証してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     }
   },
 
@@ -139,7 +139,7 @@
       "temperature": 0.5,
       "fallback_models": ["openai/gpt-5.2-codex"],
       "description": "自律的な深い実装・リファクタリング・複雑なロジック（sisyphus が担う）",
-      "prompt_append": "docs/guides/AGENT.md・DDD.md の規約を遵守し、型チェック・テストを必ず実行してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "docs/guides/AGENT.md・DDD.md の規約を遵守し、型チェック・テストを必ず実行してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -151,7 +151,7 @@
       "temperature": 0.3,
       "fallback_models": ["openai/gpt-5.1-codex-mini"],
       "description": "LSP・AST-Grep を使った安全なリファクタリング（必要時のみ）",
-      "prompt_append": "リファクタリング前後で型チェック・テストを必ず実行し、動作が変わっていないことを確認してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "リファクタリング前後で型チェック・テストを必ず実行し、動作が変わっていないことを確認してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -163,7 +163,7 @@
       "temperature": 0.4,
       "fallback_models": ["openai/gpt-5.2-codex"],
       "description": "単体・統合テスト（Mini 担当。6回程度失敗が続く場合は Codex に昇格）",
-      "prompt_append": "Vitest を使用してください。カバレッジ目標: utility 90%, business-logic 85%。テスト失敗時は原因を分析し、修正→再実行のループを行ってください。どうしても解決しない場合はエスカレーションしてください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "Vitest を使用してください。カバレッジ目標: utility 90%, business-logic 85%。テスト失敗時は原因を分析し、修正→再実行のループを行ってください。どうしても解決しない場合はエスカレーションしてください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -174,7 +174,7 @@
       "temperature": 0.4,
       "fallback_models": ["openai/gpt-5.2-codex"],
       "description": "E2E・回帰・スナップショットテスト（Playwright 使用）",
-      "prompt_append": "Playwright を使用し、ユーザージャーニー全体を実ブラウザで検証してください。テスト失敗時はスクリーンショット・DOMスナップショットを分析し、自己修復してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "Playwright を使用し、ユーザージャーニー全体を実ブラウザで検証してください。テスト失敗時はスクリーンショット・DOMスナップショットを分析し、自己修復してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -186,7 +186,7 @@
       "temperature": 0.6,
       "fallback_models": ["anthropic/claude-haiku-4-5-20250929"],
       "description": "UI微調整・統一感是正（色・レイアウト・アニメーション・レスポンシブ）",
-      "prompt_append": "shadcn/ui と Tailwind CSS を使用してください。視覚的変更のみを担当し、API呼び出し・状態管理・ビジネスロジックには一切触れないでください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "shadcn/ui と Tailwind CSS を使用してください。視覚的変更のみを担当し、API呼び出し・状態管理・ビジネスロジックには一切触れないでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -209,7 +209,7 @@
       "temperature": 0.5,
       "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
       "description": "設計書・ドキュメント・コメントの執筆・更新（IMP-B フェーズ）",
-      "prompt_append": "docs/guides/DDD.md の規約に従い、他のエージェントが設計書だけ見て開発を進められるよう、具体的かつ自己完結した内容で記述してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "docs/guides/DDD.md の規約に従い、他のエージェントが設計書だけ見て開発を進められるよう、具体的かつ自己完結した内容で記述してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     },
 
     // -----------------------------------------------------------------------
@@ -241,7 +241,7 @@
       "temperature": 0.7,
       "fallback_models": ["openai/gpt-5.2-codex"],
       "description": "高度な推論・最難関アーキテクチャ判断（最終手段。使用は最小限に）",
-      "prompt_append": "このカテゴリは高コストです。他のカテゴリで解決できない場合のみ使用してください。出力は日本語のみ。英語は禁止。"
+      "prompt_append": "このカテゴリは高コストです。他のカテゴリで解決できない場合のみ使用してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
     }
   },
 

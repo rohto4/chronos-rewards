@@ -1,6 +1,6 @@
 # Chronos Rewards - 実装状況・ロードマップ
 
-最終更新日: 2026年2月22日
+最終更新日: 2026年2月23日
 
 ---
 
@@ -34,8 +34,9 @@
 
 ## 🔭 現在の作業
 
-- 進行中/予定のタスクは `docs/implementation/implementation-plan.md` と `.locks/tasks/active-tasks.json` を参照
-- 仕様・設計の詳細は `docs/requirements.md` と `docs/architecture.md` を参照
+- 進行中/予定のタスクは `docs/implementation/implementation-plan.md` と `docs/implementation/active-tasks.json` を参照
+- 仕様・設計の詳細は `docs/specs/requirements.md` と `docs/architecture/` を参照
+- 全体の索引は `docs/README.md` を参照
 
 ---
 

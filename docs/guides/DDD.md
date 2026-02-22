@@ -21,15 +21,15 @@
 フェーズごとに以下の手順を踏んでください。
 
 ### Phase A: Architecture & Schema
-1. `docs/architecture.md` の作成・更新
-2. `docs/data-schema.md` (ER図、型定義) の作成・更新
+1. `docs/architecture/` 配下の設計ドキュメントを作成・更新
+2. `docs/architecture/database-design.md` (ER図、型定義) を作成・更新
 
 ### Phase B: Feature Design
-1. `docs/ui-spec.md` (UI/UX仕様) の作成
-2. `docs/logic-flow.md` (時限投稿、フィルタリング、Qiita連携ロジック) の作成
+1. `docs/specs/requirements.md`（要件）を更新
+2. 必要に応じて `docs/architecture/COMPONENT_DESIGN.md` / `docs/architecture/API_DESIGN.md` を更新
 
 ### Phase C: Implementation
-1. `implementation-plan.md` で手順を提示
+1. `docs/implementation/implementation-plan.md` で手順を提示
 2. 承認後、コードを生成
 3. 完了後、ローカルバックアップ機能の整合性を確認
 

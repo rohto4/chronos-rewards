@@ -8,15 +8,16 @@
 ## 📚 必読ファイル
 
 ```
-1. docs/guides/AGENT.md（最重要）
-2. docs/guides/DDD.md
-3. docs/guides/tech-stack.md
-4. docs/PROJECT.md（プロジェクト固有設定、無ければスキップ）
-5. docs/guides/TEAM_GUIDE.md（このファイル）
-6. docs/implementation/implementation-plan.md
-7. docs/implementation/IMPLEMENTATION_STATUS.md
-8. docs/guides/MODEL_USAGE.md
-9. .locks/tasks/active-tasks.json
+1. docs/README.md
+2. docs/guides/AGENT.md（最重要）
+3. docs/guides/DDD.md
+4. docs/guides/tech-stack.md
+5. docs/PROJECT.md（プロジェクト固有設定、無ければスキップ）
+6. docs/guides/TEAM_GUIDE.md（このファイル）
+7. docs/implementation/implementation-plan.md
+8. docs/implementation/IMPLEMENTATION_STATUS.md
+9. docs/guides/MODEL_USAGE.md
+10. docs/implementation/active-tasks.json
 ```
 
 ---
