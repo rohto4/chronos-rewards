@@ -169,6 +169,13 @@ git commit -m "docs: complete task {task-id}"
 git push
 ```
 
+### STEP 1-1: 所要時間の集計（任意）
+
+```bash
+# active-tasks.json の startedAt / completedAt から所要時間を集計
+npm run tasks:summary
+```
+
 ### STEP 2: 実装状況ドキュメントの更新
 
 ```markdown

@@ -17,7 +17,8 @@
     "test:tasks": "tsx scripts/test-tasks.ts",
     "test:rewards": "tsx scripts/test-rewards.ts",
     "test:genres": "tsx scripts/test-genres.ts",
-    "test:all": "npm run test:auth && npm run test:tasks && npm run test:rewards && npm run test:genres"
+    "test:all": "npm run test:auth && npm run test:tasks && npm run test:rewards && npm run test:genres",
+    "tasks:summary": "tsx scripts/task-duration-summary.ts"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.9.0",
