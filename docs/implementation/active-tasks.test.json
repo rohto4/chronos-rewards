@@ -4,13 +4,14 @@
       "id": "task-test-001",
       "title": "TEAM-TEST-001",
       "description": "チームエージェントの動作確認: scripts/agent-smoke-test.ts を追加し、npm run agent:test を実行して出力を確認する。依存追加や環境変数は不要にする。",
-      "status": "pending",
-      "assignedTo": null,
+      "status": "in_progress",
+      "assignedTo": "sisyphus-implementer",
       "priority": "low",
       "feature": "agent-test",
       "estimatedDuration": "0.5h",
       "agentPlan": ["sisyphus-implementer", "logic-tester"],
-      "createdAt": "2026-02-23T00:00:00Z"
+      "createdAt": "2026-02-23T00:00:00Z",
+      "startedAt": "2026-02-22T21:48:39Z"
     }
   ]
 }
