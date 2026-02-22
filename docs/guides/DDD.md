@@ -33,7 +33,40 @@
 2. 承認後、コードを生成
 3. 完了後、ローカルバックアップ機能の整合性を確認
 
-## 5. Output Rules
+## 5. Task Flow Standard (DDD+)
+
+品質を担保するため、タスクの進行は以下の流れを必須とする。
+
+1. **必読の確認**
+   - `docs/README.md`
+   - `docs/guides/AGENT.md`
+   - `docs/guides/TEAM_GUIDE.md`
+   - `docs/implementation/implementation-plan.md`
+   - `docs/implementation/IMPLEMENTATION_STATUS.md`
+   - `docs/implementation/active-tasks.json`
+
+2. **設計の先行更新**
+   - 要件が曖昧、または仕様変更が必要な場合はコードを書く前に設計書を更新
+   - 更新対象: `docs/specs/requirements.md` / `docs/architecture/` / 関連する設計書
+   - 承認フロー:
+     - 対話型（ユーザーと1:1）: 設計完了後にユーザー承認が必須
+     - チーム開発: 設計完了後にメインエージェントの承認で進行可
+
+3. **実装（最小差分）**
+   - 既存仕様を壊さず、必要最小限の変更のみ許可
+
+4. **テストのループ（必須）**
+   - テスト実行 → 失敗修正 → 再実行
+   - 成功するまで繰り返す（テスト未実行の完了は禁止）
+
+5. **設計書の反映（IMP-B）**
+   - 実装による差分を設計書に反映
+   - `docs/implementation/IMPLEMENTATION_STATUS.md` を更新
+
+6. **タスク状態の更新**
+   - `docs/implementation/active-tasks.json` の assignedTo / status / startedAt / completedAt を更新
+
+## 6. Output Rules
 - 回答の冒頭で「どのドキュメントを更新・参照しているか」を明示すること。
 - コードを出力する際は、そのコードがドキュメントのどの要件に対応しているかコメントを添えること。
 - ユーザーから「実装して」と言われても、設計が不十分な場合は「まず設計を詰めましょう」と提案すること。
