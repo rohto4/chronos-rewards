@@ -41,9 +41,6 @@ EOF
 
 # 4. チーム開発を開始
 /start-work
-
-⚠️ 注意: Atlas-Orchestratorは /start-work 経由でのみ使用してください。
-直接呼び出すと正しく動作しません。
 ```
 
 ---
