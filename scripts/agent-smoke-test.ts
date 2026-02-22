@@ -158,6 +158,7 @@ function main() {
   const configPath = path.resolve(rootDir, '.opencode', 'oh-my-opencode.jsonc');
 
   console.log('=== Agent Smoke Test ===');
+  console.log('非Codexサブエージェントが起動した');
   console.log('');
 
   console.log('[1/3] MODEL_USAGE.md');
