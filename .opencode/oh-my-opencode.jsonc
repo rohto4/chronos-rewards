@@ -1,0 +1,352 @@
+{
+  // oh-my-opencode プロジェクト設定
+  // ドキュメント: https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/refs/heads/dev/docs/reference/configuration.md
+  // スキーマ:    https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+
+  // =========================================================================
+  // AGENT 設定
+  //
+  // 役割マッピング（ご希望名称 → oh-my-opencode built-in agent）:
+  //   prometheus-planner      → prometheus   (Sonnet)
+  //   atlas-orchestrator      → atlas        (Codex)
+  //   librarian-researcher    → librarian    (Haiku)
+  //   sisyphus-implementer    → sisyphus     (Mini)
+  //   refactoring-specialist  → hephaestus  (Codex、必要時のみ)
+  //   oracle-architect        → oracle       (Sonnet)
+  //
+  // ※ logic-tester / e2e-tester / frontend-ui-ux-engineer は
+  //   カテゴリ（categories）経由で sisyphus が task() 委譲する形で実現
+  // =========================================================================
+  "agents": {
+
+    // -----------------------------------------------------------------------
+    // prometheus（計画/分解）: Claude Sonnet 4.5
+    // 目標使用率: Sonnet 全体の 30% 程度
+    // コードを書かず、計画・タスク分解のみ担当
+    // -----------------------------------------------------------------------
+    "prometheus": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.5,
+      "fallback_models": ["anthropic/claude-haiku-4-5-20250929"],
+      "prompt_append": "あなたはプランナーです。コードを一切書かず、タスク分解・計画立案・サブエージェントへの委譲のみを担当してください。実装は必ず sisyphus（deep カテゴリ）に委譲し、調査は librarian に委譲してください。並列実行は控えめにして、トークン効率最重視でお願いします。出力は日本語のみ。英語は禁止。",
+      "permission": {
+        "edit": "deny"
+      }
+    },
+
+    // -----------------------------------------------------------------------
+    // atlas（実行管理/オーケストレーション）: GPT-5.2-Codex
+    // 目標使用率: Codex 全体の 40% 程度
+    // prometheus のプランを受け取り、サブエージェントを指揮する
+    // -----------------------------------------------------------------------
+    "atlas": {
+      "model": "openai/gpt-5.2-codex",
+      "temperature": 0.5,
+      "fallback_models": ["openai/gpt-5.1-codex-mini"],
+      "prompt_append": "あなたはオーケストレーターです。Prometheus のプランに従い、各サブエージェントへタスクを割り当て・進捗管理してください。自分でコードを書くのは最小限に留め、適切なカテゴリ（deep/quick/logic-testing/e2e-testing/visual-engineering）に委譲してください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // sisyphus（実装主担当）: GPT-5.1-Codex-Mini
+    // 目標使用率: Mini 全体の 60% 程度（最頻使用）
+    // Atlas から委譲された実装タスクを自律的に完遂する
+    // -----------------------------------------------------------------------
+    "sisyphus": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.5,
+      "fallback_models": ["openai/gpt-5.2-codex"],
+      "prompt_append": "あなたは実装エージェントです。与えられたタスクをコードで完遂してください。調査が必要な場合は librarian カテゴリに委譲し、型チェック・テスト実行を必ず行ってください。docs/guides/AGENT.md・DDD.md の規約を遵守してください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // hephaestus（リファクタリング専門）: GPT-5.2-Codex
+    // 目標使用率: Codex 全体の 60% 程度（必要時のみ起動）
+    // LSP/AST-Grep を活用した決定論的・安全なリファクタリング
+    // -----------------------------------------------------------------------
+    "hephaestus": {
+      "model": "openai/gpt-5.2-codex",
+      "temperature": 0.3,
+      "fallback_models": ["openai/gpt-5.1-codex-mini"],
+      "prompt_append": "あなたはリファクタリング専門家です。LSP と AST-Grep を最大限活用し、動作を変えずにコード品質・保守性を向上させてください。リファクタリング前後で必ず型チェック・テストを実行し、動作が変わっていないことを確認してください。コードの圧縮・難読化は禁止です。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // librarian（調査/差分確認）: Claude Haiku 4.5
+    // 目標使用率: Haiku 全体の 70% 程度
+    // ドキュメント検索・コードベース調査・差分確認に特化
+    // -----------------------------------------------------------------------
+    "librarian": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.3,
+      "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
+      "prompt_append": "あなたは調査専門家です。コードベース検索・公式ドキュメント参照・差分確認を担当してください。コードの変更は行わず、調査結果を簡潔に報告することに集中してください。出力は日本語のみ。英語は禁止。",
+      "permission": {
+        "edit": "deny"
+      }
+    },
+
+    // -----------------------------------------------------------------------
+    // explore（高速 grep 検索）: Claude Haiku 4.5
+    // 目標使用率: Haiku 全体の 30% 程度
+    // ファイル検索・パターンマッチのみ、コード変更なし
+    // -----------------------------------------------------------------------
+    "explore": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.1,
+      "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
+      "prompt_append": "あなたは高速検索エージェントです。ファイル・パターン検索のみを担当します。コードの変更は一切行わないでください。出力は日本語のみ。英語は禁止。",
+      "permission": {
+        "edit": "deny",
+        "bash": { "grep": "allow", "find": "allow", "ls": "allow", "cat": "allow" }
+      }
+    },
+
+    // -----------------------------------------------------------------------
+    // oracle（設計判断レビュー）: Claude Sonnet 4.5
+    // 目標使用率: Sonnet 全体の 70% 程度
+    // アーキテクチャ・デバッグ・技術的意思決定のレビュー
+    // -----------------------------------------------------------------------
+    "oracle": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": ["anthropic/claude-haiku-4-5-20250929"],
+      "prompt_append": "あなたは設計判断レビュー専門家です。アーキテクチャの妥当性・型安全性・DDD原則への準拠・パフォーマンス上のリスクをレビューしてください。docs/guides/DDD.md・tech-stack.md を常に参照し、設計の一貫性を保証してください。出力は日本語のみ。英語は禁止。"
+    }
+  },
+
+  // =========================================================================
+  // CATEGORY 設定
+  //
+  // sisyphus が task() でサブエージェントに委譲する際に使うドメイン分類。
+  // モデルを直接指定することで「誰が何を担うか」を category レベルで制御する。
+  //
+  // 目標モデル使用率:
+  //   gpt-5.1-codex-mini : 40〜48%  → deep / logic-testing / e2e-testing
+  //   claude-sonnet-4.5  : 22〜30%  → visual-engineering / unspecified-high
+  //   claude-haiku-4.5   : 15〜22%  → quick / writing / unspecified-low
+  //   gpt-5.2-codex      :  8〜12%  → refactoring / ultrabrain
+  //   gpt-5.2            :  1〜 3%  → ultrabrain（高難度のみ）
+  // =========================================================================
+  "categories": {
+
+    // -----------------------------------------------------------------------
+    // deep（実装主担当カテゴリ）: Mini
+    // 最頻使用。自律的な深い実装・複雑なロジック
+    // -----------------------------------------------------------------------
+    "deep": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.5,
+      "fallback_models": ["openai/gpt-5.2-codex"],
+      "description": "自律的な深い実装・リファクタリング・複雑なロジック（sisyphus が担う）",
+      "prompt_append": "docs/guides/AGENT.md・DDD.md の規約を遵守し、型チェック・テストを必ず実行してください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // refactoring（リファクタリング）: Codex
+    // 必要時のみ。LSP/AST-Grep 活用の決定論的リファクタリング
+    // -----------------------------------------------------------------------
+    "refactoring": {
+      "model": "openai/gpt-5.2-codex",
+      "temperature": 0.3,
+      "fallback_models": ["openai/gpt-5.1-codex-mini"],
+      "description": "LSP・AST-Grep を使った安全なリファクタリング（必要時のみ）",
+      "prompt_append": "リファクタリング前後で型チェック・テストを必ず実行し、動作が変わっていないことを確認してください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // logic-testing（単体/統合テスト）: Mini → Codex（6回失敗でフォールバック）
+    // fallback_models で失敗時の昇格を実現
+    // -----------------------------------------------------------------------
+    "logic-testing": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.4,
+      "fallback_models": ["openai/gpt-5.2-codex"],
+      "description": "単体・統合テスト（Mini 担当。6回程度失敗が続く場合は Codex に昇格）",
+      "prompt_append": "Vitest を使用してください。カバレッジ目標: utility 90%, business-logic 85%。テスト失敗時は原因を分析し、修正→再実行のループを行ってください。どうしても解決しない場合はエスカレーションしてください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // e2e-testing（E2E/回帰/スナップショット）: Mini
+    // -----------------------------------------------------------------------
+    "e2e-testing": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.4,
+      "fallback_models": ["openai/gpt-5.2-codex"],
+      "description": "E2E・回帰・スナップショットテスト（Playwright 使用）",
+      "prompt_append": "Playwright を使用し、ユーザージャーニー全体を実ブラウザで検証してください。テスト失敗時はスクリーンショット・DOMスナップショットを分析し、自己修復してください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // visual-engineering（UI微調整/統一感是正）: Sonnet
+    // 視覚的変更のみ。API・状態管理は担当しない
+    // -----------------------------------------------------------------------
+    "visual-engineering": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": ["anthropic/claude-haiku-4-5-20250929"],
+      "description": "UI微調整・統一感是正（色・レイアウト・アニメーション・レスポンシブ）",
+      "prompt_append": "shadcn/ui と Tailwind CSS を使用してください。視覚的変更のみを担当し、API呼び出し・状態管理・ビジネスロジックには一切触れないでください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // quick（軽量・単純タスク）: Haiku
+    // タイポ修正・単一ファイルの軽微な変更
+    // -----------------------------------------------------------------------
+    "quick": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.3,
+      "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
+      "description": "軽微な変更・タイポ修正・単一ファイルの小さな変更"
+    },
+
+    // -----------------------------------------------------------------------
+    // writing（ドキュメント/設計書更新）: Haiku
+    // 設計書・コメント・README の執筆・更新
+    // -----------------------------------------------------------------------
+    "writing": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.5,
+      "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
+      "description": "設計書・ドキュメント・コメントの執筆・更新（IMP-B フェーズ）",
+      "prompt_append": "docs/guides/DDD.md の規約に従い、他のエージェントが設計書だけ見て開発を進められるよう、具体的かつ自己完結した内容で記述してください。出力は日本語のみ。英語は禁止。"
+    },
+
+    // -----------------------------------------------------------------------
+    // unspecified-low（汎用・低負荷）: Haiku
+    // -----------------------------------------------------------------------
+    "unspecified-low": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.5,
+      "fallback_models": ["anthropic/claude-sonnet-4-5-20250929"],
+      "description": "汎用・低負荷タスク"
+    },
+
+    // -----------------------------------------------------------------------
+    // unspecified-high（汎用・高負荷）: Sonnet
+    // -----------------------------------------------------------------------
+    "unspecified-high": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": ["anthropic/claude-haiku-4-5-20250929"],
+      "description": "汎用・高負荷タスク（分類できない複雑なケース）"
+    },
+
+    // -----------------------------------------------------------------------
+    // ultrabrain（高難度ロジック・最終手段）: GPT-5.2
+    // 使用頻度を意図的に最小化（1〜3% 目標）
+    // -----------------------------------------------------------------------
+    "ultrabrain": {
+      "model": "openai/gpt-5.2",
+      "temperature": 0.7,
+      "fallback_models": ["openai/gpt-5.2-codex"],
+      "description": "高度な推論・最難関アーキテクチャ判断（最終手段。使用は最小限に）",
+      "prompt_append": "このカテゴリは高コストです。他のカテゴリで解決できない場合のみ使用してください。出力は日本語のみ。英語は禁止。"
+    }
+  },
+
+  // =========================================================================
+  // SISYPHUS AGENT システム設定
+  // =========================================================================
+  "sisyphus_agent": {
+    "disabled": false,
+    "default_builder_enabled": false, // OpenCode-Builder は使わない
+    "planner_enabled": true,          // Prometheus（プランナー）を有効化
+    "replace_plan": true              // デフォルト plan エージェントを Prometheus に置き換え
+  },
+
+  // =========================================================================
+  // バックグラウンドタスク並列実行制御
+  // 並列数は全体/プロバイダー/モデルで最大2に制限
+  // =========================================================================
+  "background_task": {
+    "defaultConcurrency": 2,
+    "staleTimeoutMs": 720000,
+    "providerConcurrency": {
+      "anthropic": 2,
+      "openai": 2
+    },
+    "modelConcurrency": {
+      "openai/gpt-5.1-codex-mini": 2,  // 最頻使用（40〜48%）
+      "anthropic/claude-sonnet-4-5-20250929": 2, // Sonnet（22〜30%）
+      "anthropic/claude-haiku-4-5-20250929": 2,  // Haiku（15〜22%）
+      "openai/gpt-5.2-codex": 2,                 // Codex（8〜12%）
+      "openai/gpt-5.2": 1                        // GPT-5.2（1〜3%、最小限）
+    }
+  },
+
+  // =========================================================================
+  // RUNTIME FALLBACK
+  // API エラー時に自動でフォールバックモデルへ切り替える
+  // =========================================================================
+  "runtime_fallback": {
+    "enabled": true,
+    "retry_on_errors": [400, 429, 503, 529],
+    "max_fallback_attempts": 6,   // テスト失敗 6 回で Codex 昇格に対応
+    "cooldown_seconds": 30,
+    "timeout_seconds": 60,
+    "notify_on_fallback": true
+  },
+
+  // =========================================================================
+  // フック設定
+  // =========================================================================
+  "disabled_hooks": [
+    // 以下は意図的に無効化
+    "auto_resume",               // 自動再開（手動管理を優先）
+    "thinking-block-validator",  // Sonnet/Haiku では不要
+    "empty-task-response-detector" // 誤検知が多いため無効化
+    // 注意: no-sisyphus-gpt は絶対に無効化しないこと
+    // （Sisyphus は GPT に最適化されていないため、このフックが Hephaestus に切り替える）
+  ],
+
+  // =========================================================================
+  // Git Master（コミット設定）
+  // =========================================================================
+  "git_master": {
+    "commit_footer": true,
+    "include_co_authored_by": true
+  },
+
+  // =========================================================================
+  // コメントチェッカー（冗長コメント排除）
+  // docs/guides/AGENT.md CODE-001 に準拠
+  // =========================================================================
+  "comment_checker": {
+    "custom_prompt": "以下のコメントを評価してください:\n{{comments}}\n\nNGパターン: 冗長・自明・「AIが書いた」と分かるコメント。OKパターン: コードを読むだけでは分からない意図・背景・制約を説明するコメント。CSS関連は除外。"
+  },
+
+  // =========================================================================
+  // Experimental（実験的機能）
+  // =========================================================================
+  "experimental": {
+    "aggressive_truncation": true,   // コンテキスト節約のため有効
+    "task_system": true,             // Sisyphus タスクシステム有効化
+    "dynamic_context_pruning": {
+      "enabled": true,
+      "notification": "minimal",
+      "turn_protection": {
+        "enabled": true,
+        "turns": 3
+      },
+      "strategies": {
+        "deduplication": { "enabled": true },
+        "supersede_writes": { "enabled": true, "aggressive": false },
+        "purge_errors": { "enabled": true, "turns": 5 }
+      }
+    }
+  },
+
+  // =========================================================================
+  // Hashline Edit（ハッシュアンカー編集）
+  // stale-line エラーを防ぐ LINE#ID ベースの編集ツール
+  // =========================================================================
+  "hashline_edit": true,
+
+  // =========================================================================
+  // Tmux（Windows 環境では基本 false）
+  // =========================================================================
+  "tmux": {
+    "enabled": false
+  }
+}

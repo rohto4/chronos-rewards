@@ -141,14 +141,12 @@
 
 ---
 
-## 作業ロック機構（並行開発向け）
+## タスク共有（並行開発向け）
 
-チーム開発時は `.locks/` ディレクトリを活用：
+チーム開発時は `docs/implementation/active-tasks.json` でタスク状況と担当を共有：
 ```
-.locks/
-├── AUTH-001.lock          # Google OAuth 検証者がロック
-├── MOBILE-001.lock        # モバイルUX担当者がロック
-└── active-tasks.json      # 全体状況を JSON で共有
+docs/implementation/
+└── active-tasks.json
 ```
 
 詳細は `docs/guides/TEAM_GUIDE.md` を参照。

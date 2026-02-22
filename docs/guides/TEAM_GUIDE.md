@@ -1,7 +1,7 @@
 # チーム開発運用ガイド
 
 **対象**: OhMyOpenCode（opencode-cli）によるチーム開発
-**最終更新**: 2026-02-22
+**最終更新**: 2026-02-23
 
 ---
 
@@ -29,9 +29,9 @@
 <プロジェクトルート>/ohmyopencode-config.json が存在すること
 <プロジェクトルート>/docs/guides/AGENT.md を最新化しておくこと
 
-# 2. Lock機構を初期化
-mkdir -p .locks/{features,files,tasks}
-cat > .locks/tasks/active-tasks.json <<'EOF'
+# 2. タスク管理ファイルを用意
+mkdir -p docs/implementation
+cat > docs/implementation/active-tasks.json <<'EOF'
 {
   "tasks": []
 }
@@ -51,27 +51,18 @@ EOF
 
 ---
 
-## 🔒 Lock機構（重要）
+## ✅ タスク管理（重要）
 
-### Lock ファイルシステム
+### タスク共有ファイル
 
 ```
-.locks/
-├── features/              # 機能単位のロック
-│   ├── posts.lock
-│   ├── projects.lock
-│   ├── auth.lock
-│   └── editor.lock
-├── files/                 # ファイル単位のロック（オプション）
-│   ├── migration.lock
-│   └── package.lock
-└── tasks/                 # タスク管理
-    └── active-tasks.json
+docs/implementation/
+└── active-tasks.json
 ```
 
 ### active-tasks.json の構造
 
-`.locks/tasks/active-tasks.json`
+`docs/implementation/active-tasks.json`
 
 ```json
 {
@@ -123,30 +114,11 @@ EOF
 - `status`: タスクの状態 (`pending` / `in_progress` / `completed`)
 - `assignedTo`: 担当エージェントID（未割り当ての場合は `null`）
 - `priority`: 優先度 (`high` / `medium` / `low`)
-- `feature`: 関連する機能名（Lock機構の`feature`と対応）
+- `feature`: 関連する機能名（任意）
 - `estimatedDuration`: 推定所要時間
 - `createdAt`: タスク作成日時
 - `startedAt`: タスク開始日時（オプション）
 - `completedAt`: タスク完了日時（オプション）
-
-### Lock ファイル形式
-
-`.locks/features/{feature-name}.lock`
-
-```json
-{
-  "feature": "posts",
-  "agent": "agent-1",
-  "task": "記事詳細ページ実装",
-  "lockedAt": "2026-02-15T10:00:00Z",
-  "estimatedDuration": "2h",
-  "lockedFiles": [
-    "src/app/(public)/posts/[slug]/page.tsx",
-    "src/components/posts/PostContent.tsx",
-    "docs/implementation/01-posts-feature.md"
-  ]
-}
-```
 
 ---
 
@@ -156,68 +128,43 @@ EOF
 
 ```bash
 # 1. active-tasks.json を読む
-cat .locks/tasks/active-tasks.json
+cat docs/implementation/active-tasks.json
 
 # 2. status が "pending" かつ assignedTo が null のタスクを探す
 # 3. 優先度（priority）が高いものから選ぶ
 # 4. 自分のエージェントIDを assignedTo に設定
 # 5. status を "in_progress" に変更
+# 6. startedAt を追加
 ```
 
 優先順位: 高 🔥 → 中 🟡 → 低 ⏸️
 
-### STEP 2: Lock取得手順
+### STEP 2: 着手宣言
 
 ```bash
-# STEP 2-1: 機能ロックを確認
-if [ -f .locks/features/{feature-name}.lock ]; then
-  echo "Feature is locked by another agent. Waiting or selecting another task."
-  exit 1
-fi
-
-# STEP 2-2: ロックファイルを作成
-cat > .locks/features/{feature-name}.lock <<EOF
-{
-  "feature": "{feature-name}",
-  "agent": "{your-agent-id}",
-  "task": "{task-title}",
-  "lockedAt": "$(date -Iseconds)",
-  "estimatedDuration": "2h",
-  "lockedFiles": [
-    "src/app/...",
-    "docs/implementation/..."
-  ]
-}
-EOF
-
-# STEP 2-3: Git add & commit
-git add .locks/features/{feature-name}.lock
-git commit -m "lock: {feature-name} feature locked by {agent-id}"
+# active-tasks.json を更新（assignedTo/status/startedAt）
+git add docs/implementation/active-tasks.json
+git commit -m "chore: assign task {task-id} to {agent-id}"
 git push
 ```
 
-### STEP 3: Lock取得失敗時の対応
+### STEP 3: タスクが無い場合の対応
 
-- 他のタスクを選択（pending状態のタスク）
-- 待機（10分後に再試行）
-- タイムアウトチェック（4時間以上経過しているロックは強制解除可能）
+- pending が無い場合は優先度の高い新規タスクを追加
+- in_progress が長時間停滞している場合は担当者に確認して再割り当て
 
 ---
 
-## 🔓 作業完了後のルール（エージェント向け）
+## ✅ 作業完了後のルール（エージェント向け）
 
-### STEP 1: Lock解放手順
+### STEP 1: タスク完了の更新
 
 ```bash
-# STEP 1-1: ロックファイルを削除
-rm .locks/features/{feature-name}.lock
-
-# STEP 1-2: タスクを完了に更新
 # active-tasks.json の該当タスクを "status": "completed" に変更
+# completedAt を追加
 
-# STEP 1-3: Git commit
-git add .locks/
-git commit -m "unlock: {feature-name} feature completed by {agent-id}"
+git add docs/implementation/active-tasks.json
+git commit -m "docs: complete task {task-id}"
 git push
 ```
 
@@ -252,11 +199,10 @@ cat docs/implementation/{feature-id}-feature.md
 # → "🎯 次のステップ" セクションを参照
 ```
 
-### STEP 2: Lock取得
+### STEP 2: タスク着手の記録
 
 ```bash
-# 機能ロックを取得（前述の手順）
-# .locks/features/{feature-name}.lock を作成
+# active-tasks.json の該当タスクを in_progress に更新（前述の手順）
 ```
 
 ### STEP 3: 実装
@@ -314,15 +260,10 @@ git add docs/implementation/
 git commit -m "docs: 記事詳細ページ実装状況を更新"
 ```
 
-### STEP 7: Lock解放
+### STEP 7: タスク完了の共有
 
 ```bash
-# ロックファイルを削除
-rm .locks/features/{feature-name}.lock
-
-git add .locks/
-git commit -m "unlock: posts feature completed by agent-1"
-git push
+# active-tasks.json の該当タスクを completed に更新（前述手順）
 ```
 
 ---
@@ -348,8 +289,6 @@ git push
 - **refactor**: リファクタリング
 - **test**: テスト追加・修正
 - **chore**: ビルド・補助ツール変更
-- **lock**: Lock取得
-- **unlock**: Lock解放
 
 ---
 
@@ -372,16 +311,14 @@ git add .
 git commit -m "fix: merge conflict resolved"
 ```
 
-### Lock の強制解除（タイムアウト）
+### 停滞タスクの再割当（タイムアウト目安）
+
+- 最終更新から長時間進捗が無い場合、担当者に確認して `pending` に戻す
+- 再割当後に `active-tasks.json` を更新して共有
 
 ```bash
-# ロックが4時間以上前の場合のみ解除可能
-# .locks/features/{feature}.lock の lockedAt を確認
-
-# 強制解除
-rm .locks/features/{feature}.lock
-git add .locks/
-git commit -m "unlock: force unlock {feature} due to timeout"
+git add docs/implementation/active-tasks.json
+git commit -m "docs: reopen task {task-id}"
 git push
 ```
 
@@ -400,14 +337,14 @@ git push
 
 ### 原則2: 共通ファイルの編集は慎重に
 
-以下のファイルは複数エージェントが編集する可能性があるため、**Lock取得時に明示**:
+以下のファイルは複数エージェントが編集する可能性があるため、**タスクの description に影響ファイルを明記**:
 
 - `package.json`
 - `src/types/database.ts`
 - `src/lib/utils.ts`
 - データベースマイグレーション
 
-対策: ファイル単位のロック（`.locks/files/`）を使用
+対策: 事前共有と小さめのコミットで衝突を回避
 
 ### 原則3: 定期的なPull
 
@@ -422,4 +359,4 @@ git pull
 
 ---
 
-**最終更新**: 2026-02-15
+**最終更新**: 2026-02-23
