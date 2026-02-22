@@ -9,8 +9,14 @@
 
 ```
 1. docs/guides/AGENT.md（最重要）
-2. docs/PROJECT.md（プロジェクト固有設定、無ければスキップ）
-3. docs/guides/TEAM_GUIDE.md（このファイル）
+2. docs/guides/DDD.md
+3. docs/guides/tech-stack.md
+4. docs/PROJECT.md（プロジェクト固有設定、無ければスキップ）
+5. docs/guides/TEAM_GUIDE.md（このファイル）
+6. docs/implementation/implementation-plan.md
+7. docs/implementation/IMPLEMENTATION_STATUS.md
+8. docs/guides/MODEL_USAGE.md
+9. .locks/tasks/active-tasks.json
 ```
 
 ---
