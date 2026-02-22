@@ -9,6 +9,7 @@
       "priority": "low",
       "feature": "agent-test",
       "estimatedDuration": "0.5h",
+      "agentPlan": ["sisyphus-implementer", "logic-tester"],
       "createdAt": "2026-02-23T00:00:00Z"
     }
   ]

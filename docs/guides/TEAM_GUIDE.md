@@ -79,6 +79,7 @@ docs/implementation/
       "priority": "high",
       "feature": "posts",
       "estimatedDuration": "2h",
+      "agentPlan": ["sisyphus-implementer", "oracle-architect"],
       "createdAt": "2026-02-15T10:00:00Z"
     },
     {
@@ -90,6 +91,11 @@ docs/implementation/
       "priority": "high",
       "feature": "auth",
       "estimatedDuration": "3h",
+      "agentPlan": [
+        "sisyphus-implementer",
+        "oracle-architect",
+        "logic-tester"
+      ],
       "createdAt": "2026-02-15T09:00:00Z",
       "startedAt": "2026-02-15T09:30:00Z"
     },
@@ -102,6 +108,7 @@ docs/implementation/
       "priority": "medium",
       "feature": "projects",
       "estimatedDuration": "2h",
+      "agentPlan": ["sisyphus-implementer", "oracle-architect"],
       "createdAt": "2026-02-15T08:00:00Z",
       "startedAt": "2026-02-15T08:30:00Z",
       "completedAt": "2026-02-15T10:15:00Z"
@@ -119,9 +126,14 @@ docs/implementation/
 - `priority`: 優先度 (`high` / `medium` / `low`)
 - `feature`: 関連する機能名（任意）
 - `estimatedDuration`: 推定所要時間
+- `agentPlan`: タスクで期待するエージェントID配列
 - `createdAt`: タスク作成日時
 - `startedAt`: タスク開始日時（オプション）
 - `completedAt`: タスク完了日時（オプション）
+
+**agentPlan の運用ルール**:
+- 役割の明確化が必要なタスクは `agentPlan` を必ず記入
+- 省略時は `sisyphus-implementer` のみとみなす
 
 ---
 

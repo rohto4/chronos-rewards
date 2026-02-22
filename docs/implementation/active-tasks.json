@@ -9,6 +9,7 @@
       "priority": "high",
       "feature": "auth",
       "estimatedDuration": "1h",
+      "agentPlan": ["sisyphus-implementer", "oracle-architect"],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -20,6 +21,7 @@
       "priority": "high",
       "feature": "docs",
       "estimatedDuration": "2h",
+      "agentPlan": ["sisyphus-implementer", "oracle-architect"],
       "createdAt": "2026-02-22T00:00:00Z",
       "startedAt": "2026-02-22T00:00:00Z",
       "completedAt": "2026-02-22T00:00:00Z"
@@ -33,6 +35,7 @@
       "priority": "low",
       "feature": "next",
       "estimatedDuration": "0.5h",
+      "agentPlan": ["sisyphus-implementer", "oracle-architect"],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -44,6 +47,11 @@
       "priority": "medium",
       "feature": "types",
       "estimatedDuration": "4h",
+      "agentPlan": [
+        "sisyphus-implementer",
+        "oracle-architect",
+        "logic-tester"
+      ],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -55,6 +63,7 @@
       "priority": "low",
       "feature": "tests",
       "estimatedDuration": "3h",
+      "agentPlan": ["logic-tester", "oracle-architect"],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -66,6 +75,7 @@
       "priority": "medium",
       "feature": "mobile",
       "estimatedDuration": "4h",
+      "agentPlan": ["frontend-ui-ux-engineer", "oracle-architect"],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -77,6 +87,7 @@
       "priority": "medium",
       "feature": "pwa",
       "estimatedDuration": "3h",
+      "agentPlan": ["sisyphus-implementer", "oracle-architect"],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -88,6 +99,11 @@
       "priority": "high",
       "feature": "auth",
       "estimatedDuration": "3h",
+      "agentPlan": [
+        "sisyphus-implementer",
+        "oracle-architect",
+        "logic-tester"
+      ],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -99,6 +115,15 @@
       "priority": "high",
       "feature": "gamification",
       "estimatedDuration": "3w",
+      "agentPlan": [
+        "prometheus-planner",
+        "atlas-orchestrator",
+        "sisyphus-implementer",
+        "oracle-architect",
+        "logic-tester",
+        "e2e-tester",
+        "frontend-ui-ux-engineer"
+      ],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -110,6 +135,11 @@
       "priority": "high",
       "feature": "tests",
       "estimatedDuration": "3w",
+      "agentPlan": [
+        "logic-tester",
+        "e2e-tester",
+        "oracle-architect"
+      ],
       "createdAt": "2026-02-22T00:00:00Z"
     },
     {
@@ -121,6 +151,7 @@
       "priority": "medium",
       "feature": "ui",
       "estimatedDuration": "2d",
+      "agentPlan": ["frontend-ui-ux-engineer", "oracle-architect"],
       "createdAt": "2026-02-22T00:00:00Z"
     }
   ]
