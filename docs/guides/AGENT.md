@@ -1,5 +1,12 @@
 ・日本語で対応してください。
 ・このプロジェクトではドキュメント駆動開発をしています。DDD.mdとtech-stack.mdを最重要視してください。
+・作業開始時に必ず参照すること:
+  - docs/guides/DDD.md
+  - docs/guides/tech-stack.md
+  - .locks/tasks/active-tasks.json
+  - docs/implementation/implementation-plan.md
+  - docs/implementation/IMPLEMENTATION_STATUS.md
+  - docs/guides/MODEL_USAGE.md
 ・ソースコードの要件を未精査の状態で生成してしまうと、トークンの余計な消費となってしまうため、
 要件が定まっていないと判断した場合、生成を開始する前に要件の質問を挟むようにしてください。
 ・メインエージェントに質問をする際には、質問ごとに[XXX-000]のようにナンバリングをしてください。

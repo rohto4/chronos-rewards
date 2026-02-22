@@ -1,0 +1,447 @@
+{
+  "$schema": "https://raw.githubusercontent.com/OhMyOpenCode/schema/main/config-schema.json",
+  "version": "3.0.0",
+  "projectName": "[プロジェクト名を記入]",
+  "description": "[プロジェクトの説明を記入]",
+
+  "models": {
+    "claude-sonnet-4.5": {
+      "provider": "anthropic",
+      "modelId": "claude-sonnet-4-5-20250929",
+      "displayName": "Claude Sonnet 4.5",
+      "description": "高品質な設計・レビュー・ドキュメント生成に最適",
+      "maxTokens": 8192,
+      "temperature": 0.7
+    },
+    "claude-haiku-4.5": {
+      "provider": "anthropic",
+      "modelId": "claude-haiku-4-5-20250929",
+      "displayName": "Claude Haiku 4.5",
+      "description": "高速・軽量なコード生成（テスト・検索）",
+      "maxTokens": 4096,
+      "temperature": 0.7
+    },
+    "gpt-5.2": {
+      "provider": "openai",
+      "modelId": "gpt-5.2",
+      "oauth": true,
+      "displayName": "GPT 5.3 (OAuth)",
+      "description": "高度な推論・複雑なロジック実装に最適",
+      "maxTokens": 4096,
+      "temperature": 0.7
+    },
+    "gpt-5.2-codex": {
+      "provider": "openai",
+      "modelId": "gpt-5.2-codex",
+      "oauth": true,
+      "displayName": "GPT 5.3 Codex (OAuth)",
+      "description": "コード生成特化モデル（実装・リファクタリング）",
+      "maxTokens": 4096,
+      "temperature": 0.5
+    },
+    "gpt-5.1-codex-mini": {
+      "provider": "openai",
+      "modelId": "gpt-5.1-codex-mini",
+      "oauth": true,
+      "displayName": "GPT 5.1 Codex Mini (OAuth)",
+      "description": "高速・軽量なコード生成（テスト・検索）",
+      "maxTokens": 2048,
+      "temperature": 0.5
+    },
+    "frontend-visual": {
+      "provider": "openai",
+      "modelId": "gpt-5.2",
+      "displayName": "GPT 5.2 Visual",
+      "description": "視覚的UI/UX生成に最適（プロンプト優先）",
+      "maxTokens": 4096,
+      "temperature": 0.7
+    }
+  },
+
+  "agents": {
+    "prometheus-planner": {
+      "builtInAgent": "prometheus",
+      "role": "プランナー（計画立案のみ、コードを書かない）",
+      "description": "複雑なタスクを分解し、完璧な計画を立案。サブエージェントに提案させてトークン節約。",
+      "model": "claude-sonnet-4.5",
+      "fallbackModel": "claude-haiku-4.5",
+      "priority": "critical",
+      "autoStart": true,
+      "systemPrompt": "あなたはプランナー（Prometheus）です。複雑なタスクを分解し、完璧な計画を立案してください。コードは一切書かず、計画のみに集中してください。サブエージェント（Oracle、Librarian、Sisyphus）に調査や実装を依頼し、トークン消費を節約してください。計画は .sisyphus/plans/*.md に保存されます。",
+      "delegatesTo": [
+        "oracle-architect",
+        "librarian-researcher",
+        "sisyphus-implementer",
+        "refactoring-specialist",
+        "e2e-tester",
+        "logic-tester"
+      ],
+      "tokenSavingStrategy": {
+        "delegateResearch": true,
+        "delegateImplementation": true,
+        "neverWriteCode": true
+      }
+    },
+
+    "atlas-orchestrator": {
+      "builtInAgent": "atlas",
+      "role": "オーケストレーター（実行管理）",
+      "description": "Prometheusのプランを実行。サブエージェントを指揮し、進捗管理。",
+      "model": "claude-sonnet-4.5",
+      "fallbackModel": "claude-haiku-4.5",
+      "priority": "critical",
+      "autoStart": false,
+      "requiresWorkPlan": true,
+      "systemPrompt": "あなたはオーケストレーター（Atlas）です。Prometheusが作成したプランを実行してください。サブエージェントを指揮し、進捗を監視してください。⚠️ 重要: /start-work コマンドなしで直接使用しないでください。",
+      "warning": "⚠️ /start-work なしで使用禁止。Prometheusのプラン実行専用。"
+    },
+
+    "sisyphus-implementer": {
+      "builtInAgent": "sisyphus",
+      "role": "汎用実装エージェント（タスク完遂型）",
+      "description": "タスク完遂まで自律実行。Prometheusの指示を受けて実装。",
+      "model": "gpt-5.1-codex-mini",
+      "fallbackModel": "gpt-5.2-codex",
+      "priority": "high",
+      "autoStart": false,
+      "systemPrompt": "あなたは汎用実装エージェント（Sisyphus）です。Prometheusの計画に基づいて、タスク完遂まで自律的に実装してください。LSPとAST-Grepを活用して、安全なリファクタリングを実施してください。必要に応じてLibrarianに調査を依頼し、Oracleにレビューを依頼してください。",
+      "autonomy": "high"
+    },
+
+    "oracle-architect": {
+      "builtInAgent": "oracle",
+      "role": "アーキテクチャ・デバッグ専門家",
+      "description": "設計レビュー、デバッグ、技術的意思決定をサポート。",
+      "model": "claude-sonnet-4.5",
+      "fallbackModel": "claude-haiku-4.5",
+      "priority": "high",
+      "autoStart": false,
+      "systemPrompt": "あなたはアーキテクチャ・デバッグ専門家（Oracle）です。設計レビュー、デバッグ、技術的意思決定をサポートしてください。Prometheusの計画策定を支援し、アーキテクチャの問題点を指摘してください。",
+      "supportsAgent": "prometheus-planner"
+    },
+
+    "librarian-researcher": {
+      "builtInAgent": "librarian",
+      "role": "ドキュメント・コード検索専門家",
+      "description": "公式ドキュメント、コードベース履歴、GitHubの実装例を検索。",
+      "model": "claude-haiku-4.5",
+      "fallbackModel": "claude-sonnet-4.5",
+      "priority": "medium",
+      "autoStart": false,
+      "systemPrompt": "あなたはドキュメント・コード検索専門家（Librarian）です。公式ドキュメント、コードベース履歴、GitHubの実装例を検索してください。Prometheusの計画策定を支援し、Sisyphusの実装をサポートしてください。",
+      "supportsAgent": "prometheus-planner"
+    },
+
+    "explore-searcher": {
+      "builtInAgent": "explore",
+      "role": "高速コードベース検索",
+      "description": "grep特化の高速検索エージェント。",
+      "model": "gpt-5.1-codex-mini",
+      "priority": "low",
+      "autoStart": false,
+      "systemPrompt": "あなたは高速コードベース検索エージェント（Explore）です。grepとAST-Grepを活用して、ファイル・パターンを高速検索してください。"
+    },
+
+    "frontend-ui-ux-engineer": {
+      "builtInAgent": "frontend-ui-ux-engineer",
+      "category": "visual-engineering",
+      "role": "フロントエンドUI/UX専門家（ビルトイン）",
+      "description": "視覚的変更のみ（スタイリング、レイアウト、アニメーション）。",
+      "model": "claude-sonnet-4.5",
+      "fallbackModel": "claude-haiku-4.5",
+      "priority": "medium",
+      "autoStart": false,
+      "systemPrompt": "あなたはフロントエンドUI/UX専門家です。視覚的変更のみを担当してください（色、スペーシング、レイアウト、タイポグラフィ、アニメーション、レスポンシブ）。API呼び出し、データフェッチ、状態管理、イベントハンドラなどの非視覚的ロジックは担当しません。shadcn/uiコンポーネントとTailwind CSSを使用してください。",
+      "triggerConditions": [
+        "視覚的変更のみ",
+        "色、スペーシング、レイアウト",
+        "タイポグラフィ、アニメーション",
+        "レスポンシブ、ホバー状態"
+      ],
+      "avoidConditions": [
+        "API呼び出し",
+        "データフェッチ",
+        "状態管理",
+        "非視覚的イベントハンドラ"
+      ],
+      "promptAppend": "shadcn/uiコンポーネントとTailwind CSSを使用してください。"
+    },
+
+    "refactoring-specialist": {
+      "customAgent": true,
+      "role": "リファクタリング専門家",
+      "description": "LSP/AST-Grepを活用した決定論的で安全なリファクタリング。",
+      "model": "gpt-5.2-codex",
+      "fallbackModel": "gpt-5.1-codex-mini",
+      "priority": "medium",
+      "autoStart": false,
+      "systemPrompt": "あなたはリファクタリング専門家です。LSPとAST-Grepを活用して、決定論的で安全なリファクタリングを実施してください。コードの動作を変えず、品質と保守性を向上させます。リファクタリング前後でテストを実行し、動作が変わっていないことを確認してください。",
+      "tools": {
+        "lsp": {
+          "enabled": true,
+          "features": ["rename", "code-action", "diagnostics"]
+        },
+        "astGrep": {
+          "enabled": true,
+          "patterns": ["unused-imports", "duplicate-code"]
+        }
+      },
+      "refactoringStrategy": {
+        "testBeforeAfter": true,
+        "incrementalChanges": true,
+        "safetyChecks": ["type-check", "lint", "test"]
+      }
+    },
+
+    "e2e-tester": {
+      "customAgent": true,
+      "role": "E2Eテスト専門家（ウェブ）",
+      "description": "ユーザージャーニー全体を実ブラウザで検証。",
+      "model": "gpt-5.1-codex-mini",
+      "fallbackModel": "claude-haiku-4.5",
+      "priority": "high",
+      "autoStart": false,
+      "systemPrompt": "あなたはE2Eテスト専門家です。実ブラウザでユーザージャーニー全体を検証してください。テスト失敗時は、スクリーンショット・トレース・DOMスナップショットを分析し、自己修復してください。E2Eテストは統合の問題を検出し、ユーザーが実際に遭遇する問題を発見します。",
+      "testingStrategy": {
+        "framework": "Playwright",
+        "coverage": "user-journey",
+        "selfHealing": true,
+        "artifacts": ["screenshots", "traces", "dom-snapshots", "network-logs"],
+        "successRateTarget": 95
+      },
+      "fallbackNote": "E2Eテストは重要度が高いため、失敗時はCodexにフォールバック"
+    },
+
+    "logic-tester": {
+      "customAgent": true,
+      "role": "ロジックテスト専門家（ユニット・統合）",
+      "description": "ビジネスロジック、データ処理、API統合のテスト。",
+      "model": "gpt-5.1-codex-mini",
+      "fallbackModel": "claude-haiku-4.5",
+      "priority": "high",
+      "autoStart": false,
+      "systemPrompt": "あなたはロジックテスト専門家です。ビジネスロジック、データ処理、API統合のテストを作成してください。エッジケースを検出し、高いカバレッジを確保してください。ユニットテストと統合テストをバランスよく作成してください。",
+      "testingStrategy": {
+        "frameworks": ["Jest", "Vitest", "Mocha"],
+        "coverage": {
+          "target": 80,
+          "utilities": 90,
+          "businessLogic": 85,
+          "integration": 70
+        },
+        "mockStrategy": "dependency-injection",
+        "edgeCaseDetection": true
+      },
+      "fallbackNote": "テストは重要度が高いため、失敗時はCodexにフォールバック"
+    },
+
+    "security-auditor": {
+      "customAgent": true,
+      "role": "セキュリティ監査専門家",
+      "description": "セキュリティ脆弱性検出、OWASP Top 10チェック。",
+      "model": "claude-sonnet-4.5",
+      "fallbackModel": "claude-haiku-4.5",
+      "priority": "medium",
+      "autoStart": false,
+      "systemPrompt": "あなたはセキュリティ監査専門家です。セキュリティ脆弱性を検出し、OWASP Top 10のチェックを実施してください。SQLインジェクション、XSS、CSRF、認証・認可の問題、機密情報の漏洩などを検出してください。",
+      "securityChecks": [
+        "SQL Injection",
+        "XSS",
+        "CSRF",
+        "認証・認可の問題",
+        "機密情報の漏洩",
+        "依存関係の脆弱性"
+      ]
+    },
+
+    "performance-optimizer": {
+      "customAgent": true,
+      "role": "パフォーマンス最適化専門家",
+      "description": "プロファイリング、ボトルネック検出、最適化提案。",
+      "model": "claude-haiku-4.5",
+      "priority": "low",
+      "autoStart": false,
+      "systemPrompt": "あなたはパフォーマンス最適化専門家です。プロファイリングを実施し、ボトルネックを検出してください。バンドルサイズの削減、Lighthouse監査、レンダリングパフォーマンスの改善を提案してください。",
+      "optimizationTargets": [
+        "バンドルサイズ削減",
+        "初回表示時間短縮",
+        "レンダリングパフォーマンス",
+        "メモリ使用量削減"
+      ],
+      "fallbackNote": "優先度が低いためフォールバックなし（コスト重視）"
+    }
+  },
+
+  "categories": {
+    "visual-engineering": {
+      "agent": "frontend-ui-ux-engineer",
+      "model": "claude-sonnet-4.5",
+      "description": "視覚的変更専用カテゴリ",
+      "promptAppend": "shadcn/uiコンポーネントとTailwind CSSを使用してください。"
+    },
+    "refactoring": {
+      "agent": "refactoring-specialist",
+      "model": "gpt-5.1-codex-mini",
+      "description": "リファクタリング専用カテゴリ",
+      "tools": ["lsp", "ast-grep"]
+    },
+    "e2e-testing": {
+      "agent": "e2e-tester",
+      "model": "gpt-5.1-codex-mini",
+      "description": "E2Eテスト専用カテゴリ",
+      "framework": "Playwright"
+    },
+    "logic-testing": {
+      "agent": "logic-tester",
+      "model": "gpt-5.1-codex-mini",
+      "description": "ロジックテスト専用カテゴリ",
+      "framework": "Jest"
+    }
+  },
+
+  "hooks": {
+    "enabled": [
+      "context-window-monitor",
+      "session-recovery",
+      "todo-continuation-enforcer",
+      "comment-checker",
+      "directory-agents-injector",
+      "directory-readme-injector",
+      "rules-injector",
+      "preemptive-compaction",
+      "compaction-context-injector",
+      "grep-output-truncator",
+      "tool-output-truncator"
+    ],
+    "disabled": [
+      "auto_resume",
+      "empty-task-response-detector",
+      "thinking-block-validator"
+    ]
+  },
+
+  "lsp": {
+    "enabled": true,
+    "languages": {
+      "typescript": {
+        "enabled": true,
+        "features": {
+          "diagnostics": true,
+          "hover": true,
+          "completion": true,
+          "definition": true,
+          "references": true,
+          "rename": true,
+          "codeAction": true,
+          "formatting": true,
+          "signatureHelp": true
+        }
+      },
+      "javascript": {
+        "enabled": true,
+        "features": {
+          "diagnostics": true,
+          "hover": true,
+          "completion": true,
+          "definition": true,
+          "references": true,
+          "rename": true,
+          "codeAction": true
+        }
+      },
+      "python": {
+        "enabled": true,
+        "features": {
+          "diagnostics": true,
+          "hover": true,
+          "completion": true,
+          "definition": true,
+          "references": true,
+          "rename": true
+        }
+      }
+    }
+  },
+
+  "astGrep": {
+    "enabled": true,
+    "patterns": {
+      "typescript": [
+        {
+          "id": "unused-imports",
+          "pattern": "import { $$$IMPORTS } from '$MODULE'",
+          "severity": "warning"
+        },
+        {
+          "id": "duplicate-code",
+          "pattern": "function $NAME($$$PARAMS) { $$$BODY }",
+          "severity": "warning"
+        },
+        {
+          "id": "any-type-usage",
+          "pattern": ": any",
+          "severity": "error",
+          "message": "any型の使用は禁止されています"
+        }
+      ],
+      "javascript": [
+        {
+          "id": "var-to-const",
+          "pattern": "var $VAR = $VALUE",
+          "fix": "const $VAR = $VALUE",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+
+  "workflow": {
+    "parallel": false,
+    "maxConcurrentAgents": 1,
+    "agentOrchestration": {
+      "mainPlanner": "prometheus-planner",
+      "orchestrator": "atlas-orchestrator",
+      "executionAgents": [
+        "sisyphus-implementer",
+        "refactoring-specialist",
+        "e2e-tester",
+        "logic-tester"
+      ],
+      "supportAgents": [
+        "oracle-architect",
+        "librarian-researcher",
+        "explore-searcher",
+        "frontend-ui-ux-engineer",
+        "security-auditor",
+        "performance-optimizer"
+      ]
+    },
+    "lockMechanism": {
+      "enabled": true,
+      "lockDirectory": ".locks",
+      "timeout": "4h",
+      "autoRelease": true
+    },
+    "gitIntegration": {
+      "enabled": true,
+      "autoCommit": true,
+      "commitMessagePrefix": "[OhMyOpenCode]",
+      "branchStrategy": "feature-per-agent"
+    }
+  },
+
+  "settings": {
+    "autoSave": true,
+    "autoFormat": true,
+    "typeCheck": true,
+    "lint": true,
+    "verbose": false,
+    "logLevel": "info"
+  },
+
+  "tokenSavingNotes": {
+    "fallbackStrategy": "Claude Sonnet/Haikuを優先し、実装はMini中心。高難度コード変更時のみCodexを使用。",
+    "monthlyLimit": "月額課金枠を意識し、OpenAI上位モデルの常用を避けてClaude + Miniへ負荷分散。",
+    "monitoring": "週次でモデル別使用率を確認し、Codex比率が上がった場合はMini/Haikuへ再配分。"
+  }
+}

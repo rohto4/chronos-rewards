@@ -410,12 +410,20 @@ export const TaskDetailModal = ({
               </div>
             )}
 
+            {/* 完了済みタスクの通知 */}
+            {task.is_completed && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700">
+                ✅ このタスクは完了済みです。編集・完了操作はできません。
+              </div>
+            )}
+
             {/* アクションボタン */}
             <div className="flex gap-3 pt-4 border-t">
               <Button
                 variant="secondary"
                 size="md"
-                onClick={() => setIsEditMode(true)}
+                onClick={() => task.is_completed ? showToast('完了済みのタスクは編集できません', 'warning') : setIsEditMode(true)}
+                disabled={task.is_completed}
                 className="flex-1"
               >
                 <Edit2 className="w-4 h-4 mr-2" />

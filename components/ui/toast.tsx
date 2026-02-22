@@ -10,7 +10,7 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
 import { useSwipeable } from 'react-swipeable';
@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 /**
  * 個別のToastアイテム
  */
-const ToastItem = ({ toast }: { toast: Toast }) => {
+const ToastItem = forwardRef<HTMLDivElement, { toast: Toast }>(({ toast }, ref) => {
   const { removeToast } = useToastStore();
 
   // アイコンとカラー
@@ -59,6 +59,9 @@ const ToastItem = ({ toast }: { toast: Toast }) => {
     trackMouse: true,
   });
 
+  // handlersからrefを除外（forwardRefのrefと競合するため）
+  const { ref: _swipeRef, ...swipeHandlers } = handlers;
+
   // 自動消滅
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -70,11 +73,12 @@ const ToastItem = ({ toast }: { toast: Toast }) => {
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 50, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: 100, scale: 0.9 }}
       transition={{ duration: 0.2 }}
-      {...handlers}
+      {...swipeHandlers}
       className={cn(
         'flex items-start gap-3 p-4 rounded-xl border shadow-lg max-w-sm',
         bgClass
@@ -101,7 +105,9 @@ const ToastItem = ({ toast }: { toast: Toast }) => {
       </button>
     </motion.div>
   );
-};
+});
+
+ToastItem.displayName = 'ToastItem';
 
 /**
  * Toastコンテナ
