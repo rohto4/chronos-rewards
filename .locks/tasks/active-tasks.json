@@ -1,0 +1,127 @@
+{
+  "tasks": [
+    {
+      "id": "task-000",
+      "title": "認証の一時無効化（必要時のみ）",
+      "description": "既存の認証機能が実装やテストの妨げになる場合に限り、一時的に無効化する。",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "high",
+      "feature": "auth",
+      "estimatedDuration": "1h",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-001",
+      "title": "DOC-001 + ANALYTICS-001",
+      "description": "文書整合性の確認と統計情報の再集計・更新",
+      "status": "completed",
+      "assignedTo": "main-agent",
+      "priority": "high",
+      "feature": "docs",
+      "estimatedDuration": "2h",
+      "createdAt": "2026-02-22T00:00:00Z",
+      "startedAt": "2026-02-22T00:00:00Z",
+      "completedAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-002",
+      "title": "NEXT-001",
+      "description": "Next.js metadata警告の対応",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "low",
+      "feature": "next",
+      "estimatedDuration": "0.5h",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-003",
+      "title": "TYPE-001",
+      "description": "Supabase auth-helpers 型推論バグの恒久対応",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "medium",
+      "feature": "types",
+      "estimatedDuration": "4h",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-004",
+      "title": "TEST-001",
+      "description": "既存テストスクリプトの実行確認と修正",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "low",
+      "feature": "tests",
+      "estimatedDuration": "3h",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-005",
+      "title": "MOBILE-001",
+      "description": "モバイルレスポンシブ検証と改善",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "medium",
+      "feature": "mobile",
+      "estimatedDuration": "4h",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-006",
+      "title": "PWA-001",
+      "description": "PWA機能の検証（オフライン/同期）",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "medium",
+      "feature": "pwa",
+      "estimatedDuration": "3h",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-007",
+      "title": "AUTH-001",
+      "description": "Google OAuth 統合検証（オーナー設定完了後）",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "high",
+      "feature": "auth",
+      "estimatedDuration": "3h",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-008",
+      "title": "GAMIFY-001",
+      "description": "Gamification & Rewards 仕様のフル実装（Streak/Pomodoro/Skill Tree/Gacha/Chronicles）",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "high",
+      "feature": "gamification",
+      "estimatedDuration": "3w",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-009",
+      "title": "COVERAGE-001",
+      "description": "テストカバレッジ 100% 到達（追加テスト/再実行/再検証/設計書反映）",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "high",
+      "feature": "tests",
+      "estimatedDuration": "3w",
+      "createdAt": "2026-02-22T00:00:00Z"
+    },
+    {
+      "id": "task-010",
+      "title": "VISUAL-001",
+      "description": "UI統一感の検証（スナップショット/トークン監査/一貫性レビュー）",
+      "status": "pending",
+      "assignedTo": null,
+      "priority": "medium",
+      "feature": "ui",
+      "estimatedDuration": "2d",
+      "createdAt": "2026-02-22T00:00:00Z"
+    }
+  ]
+}

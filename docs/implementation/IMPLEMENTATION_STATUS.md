@@ -1,17 +1,18 @@
 # Chronos Rewards - 実装状況・ロードマップ
 
-最終更新日: 2026年2月15日（Phase 8-9 完全完了）
+最終更新日: 2026年2月22日（Phase 1-9 完了、品質は継続改善）
 
 ---
 
 ## 📊 プロジェクト現状
 
 ### 完成度
-- **全体進捗**: 100% 完成（Phase 1-8 完了）
-- **実装済みモジュール**: 40ファイル / 6,400行（推定）
-- **未実装モジュール**: 0ファイル（Phase 9 品質向上のみ残存）
-- **テストスクリプト**: 3ファイル / 624行
-- **総コード量**: 6,824行（推定）
+- **全体進捗**: 100% 完成（Phase 1-9 完了、品質は継続改善）
+- **実装済みモジュール**: 70ファイル / 12,075行（.ts/.tsx/.js/.css 合計）
+- **未実装モジュール**: 0ファイル
+- **テストスクリプト**: 8ファイル / 1,756行
+- **総コード量**: 12,075行（.ts/.tsx/.js/.css 合計）
+  - 集計方法: node_modules/.next/.git/coverage/secret を除外し、.ts/.tsx/.js/.css を集計
 
 ### ✅ 致命的な未実装（全て解決済み）
 1. ~~**報酬システムの未統合**~~ ✅ **解決（2026-02-14）** - DBトリガーとフロントエンドの統合完了
@@ -26,7 +27,7 @@
 ### ⚠️ 既知の問題
 
 1. **Supabase Auth Helpers 型推論問題**
-   - **影響範囲**: `lib/stores/*.ts` (genre-store, task-store, user-store)
+   - **影響範囲**: `lib/stores/*.ts` (genre-store, task-store, user-store), `components/providers/AuthProvider.tsx`
    - **症状**: テーブル型が `never` と推論され、insert/update でTypeScriptエラー
    - **暫定対応**: 該当ファイルに `// @ts-nocheck` を追加
    - **根本原因**: `@supabase/auth-helpers-nextjs` v0.9.0 の型推論バグ
@@ -36,9 +37,16 @@
    - **実行時影響**: なし（型定義の問題のみ）
 
 2. **Next.js メタデータ警告**
-   - **症状**: `themeColor` と `viewport` をmetadataからviewportに移行する警告
-   - **影響**: ビルド時の警告のみ、機能には影響なし
-   - **対応**: Phase 8 で対応予定
+    - **症状**: `themeColor` と `viewport` をmetadataからviewportに移行する警告
+    - **影響**: ビルド時の警告のみ、機能には影響なし
+    - **対応**: NEXT-001で対応予定
+
+3. **React ハイドレーションエラー（解決済み）** ✅
+   - **症状**: ThemeProvider の localStorage 使用によるSSR/CSRのHTML不一致
+   - **影響**: 開発環境でのコンソールエラー（赤いエラーメッセージ）
+   - **対応**: `app/layout.tsx` の `<html>` タグに `suppressHydrationWarning` を追加（2026-02-16）
+   - **解決日**: 2026-02-16
+   - **備考**: テーマ切り替えでは標準的な対応方法
 
 ---
 
@@ -108,13 +116,18 @@
 
 ---
 
-### 🧪 テストスクリプト（3ファイル / 624行）
+### 🧪 テストスクリプト（8ファイル / 1,756行）
 
 | ファイル名 | 技術スタック | 行数 | 役割 |
 |-----------|------------|------|------|
-| scripts/test-ui-components.ts | Vitest/Testing Library | 154 | UIコンポーネントテスト（6種類） |
-| scripts/test-task-components.ts | Vitest/Testing Library | 229 | タスクコンポーネントテスト（2種類） |
-| scripts/test-animations.ts | Vitest/Testing Library | 241 | アニメーションテスト（3種類） |
+| scripts/test-animations.ts | Vitest/Testing Library | 242 | アニメーションテスト |
+| scripts/test-auth.ts | Vitest/Testing Library | 141 | 認証フローのテスト |
+| scripts/test-genres.ts | Vitest/Testing Library | 266 | ジャンル機能のテスト |
+| scripts/test-rewards.ts | Vitest/Testing Library | 308 | 報酬計算のテスト |
+| scripts/test-task-components.ts | Vitest/Testing Library | 230 | タスクUIのテスト |
+| scripts/test-tasks.ts | Vitest/Testing Library | 334 | タスクCRUDのテスト |
+| scripts/test-ui-components.ts | Vitest/Testing Library | 155 | UIコンポーネントテスト |
+| scripts/test-utils.ts | Vitest/Testing Library | 80 | ユーティリティのテスト |
 
 ---
 
@@ -148,7 +161,7 @@
 | Phase 3: タスク機能 | 100% | 6/6コンポーネント完成 |
 | Phase 4: 報酬・フィルタ | 100% | 5/5コンポーネント完成 |
 | Phase 5: アニメーション | 100% | 3/3コンポーネント完成 |
-| Phase 6: 統計・分析 | 0% | 未着手 |
+| Phase 6: 統計・分析 | 100% | 統計ページ/グラフ実装済み |
 | Phase 7: コア機能の完成 | 100% ✅ | **完全完了（2026-02-14）** |
 | Phase 8: 追加機能 | 100% ✅ | **完全完了（2026-02-15）** |
 | Phase 9: 品質向上 | 100% ✅ | **完全完了（2026-02-15）** |
@@ -164,40 +177,27 @@
 
 ---
 
-## 🎯 技術スタック使用状況
+## 🎯 技術スタック使用状況（概算）
 
 | 技術 | 使用ファイル数 | 主な用途 |
 |------|-------------|---------|
-| React | 32 | 全UIコンポーネント |
-| TypeScript | 32 | 型安全性 |
+| React | 37 | UIコンポーネント（.tsx） |
+| TypeScript | 66 | 型安全性（.ts/.tsx） |
 | Next.js 14 | 5 | App Router、ページ管理 |
 | Framer Motion | 11 | アニメーション |
 | Zustand | 8 | 状態管理 |
 | Supabase | 7 | 認証・データベース |
-| Tailwind CSS | 32 | スタイリング |
+| Tailwind CSS | 1 | グローバルスタイル（globals.css） |
 | date-fns | 4 | 日付処理 |
-| Vitest | 3 | テスト |
+| Vitest | 8 | テスト |
 | CVA | 2 | スタイル管理 |
 
 ---
 
 ## 🐛 バグ・未実装（TODOコメント）
 
-### 🔴 高優先度
-
-| ファイル名 | 行番号 | 内容 | 影響範囲 |
-|-----------|-------|------|---------|
-| app/dashboard/page.tsx | 123 | タスク完了時のクリスタル報酬計算が未実装（固定値50） | ゲームバランス |
-| app/dashboard/page.tsx | 192 | タスククリック時の詳細表示が未実装 | UX |
-| components/layout/QuickAddButtons.tsx | 48-58 | クイック登録ボタンの期限自動設定が未実装 | UX |
-
-### 🟡 中優先度
-
-| ファイル名 | 内容 | 影響範囲 |
-|-----------|------|---------|
-| lib/stores/user-store.ts | コイン・クリスタル加算関数が存在しない | 報酬システム |
-| lib/stores/task-store.ts | タスク作成・完了時に reward-utils の計算関数を呼んでいない | ゲームバランス |
-| components/tasks/TaskForm.tsx | チェックリスト作成後にDBへの保存処理が未実装 | データ整合性 |
+- 現在の未解決事項は「⚠️ 既知の問題」に集約済み。
+- 旧TODOコメントに記載されていた未実装は Phase 7 で解消済み。
 
 ---
 
@@ -1507,7 +1507,7 @@ const TaskDetailModal = dynamic(
 - [x] 9.3: テストカバレッジ向上 ✅ 2026-02-15 完了
 - [x] 9.4: スクリーンリーダー対応 ✅ 2026-02-15 完了
 
-**🎉 Phase 9 完全完了！（2026-02-15）**
+**🎉 Phase 9 主要項目完了（2026-02-15）**
 
 ---
 
@@ -1542,11 +1542,11 @@ const TaskDetailModal = dynamic(
 ---
 
 ### Milestone 3: 品質向上（2ヶ月後）
-- ✅ テストカバレッジ 60%以上
-- ✅ パフォーマンス最適化
-- ✅ アクセシビリティ対応
+- ◽ テストカバレッジ 60%以上（現状 53%）
+- ◽ パフォーマンス最適化（測定/改善は継続）
+- ◽ アクセシビリティ対応（主要UIは対応済み、実機確認待ち）
 
-**成功基準**:
+**成功基準（目標）**:
 - Lighthouse スコア 90点以上
 - 初期ロード時間 2秒以内
 - WCAG 2.1 AA準拠
@@ -1674,11 +1674,11 @@ CREATE INDEX idx_reward_history_created_at ON reward_history(created_at);
 1. ✅ すべてのコア機能が動作
 2. ✅ 報酬システムが正常に機能
 3. ✅ 統計・分析機能が実装済み
-4. ✅ テストカバレッジ 60%以上
-5. ✅ パフォーマンス Lighthouse 90点以上
-6. ✅ アクセシビリティ WCAG 2.1 AA準拠
+4. ◽ テストカバレッジ 60%以上（現状 53%）
+5. ◽ パフォーマンス Lighthouse 90点以上（未測定）
+6. ◽ アクセシビリティ WCAG 2.1 AA準拠（実機確認待ち）
 7. ✅ ドキュメントが最新
-8. ✅ 既知のバグがゼロ
+8. ◽ 既知のバグがゼロ（残: 型推論/metadata警告）
 
 ---
 
@@ -1691,16 +1691,16 @@ CREATE INDEX idx_reward_history_created_at ON reward_history(created_at);
 - 全コンポーネントでforwardRef対応
 
 ### パフォーマンス
-- 動的インポート未実装（Phase 9 で対応）
-- 画像最適化未実装（Phase 9 で対応）
+- 動的インポート導入済み（主要コンポーネント）
+- 画像最適化: 対象画像なしのためスキップ
 - メモ化は必要箇所のみ
 
 ### アクセシビリティ
 - aria-label設定済み
 - キーボード操作対応（一部）
-- スクリーンリーダー未対応（Phase 9 で対応）
+- スクリーンリーダー対応済み（主要UI）
 
 ---
 
-**最終更新**: 2026年2月15日
+**最終更新**: 2026年2月22日
 **次回レビュー**: 実機動作確認完了時、またはプロダクション運用開始時

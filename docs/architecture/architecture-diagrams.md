@@ -21,7 +21,7 @@ graph TB
         NextJS[Next.js 14 App Router<br/>React 18]
         PWA[PWA Service Worker<br/>Offline Cache]
         UI[UI Components<br/>shadcn/ui + Tailwind]
-        State[State Management<br/>Zustand / TanStack Query]
+        State[State Management<br/>Zustand]
     end
     
     subgraph "Backend - Supabase"

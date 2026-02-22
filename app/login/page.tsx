@@ -64,9 +64,21 @@ export default function LoginPage() {
       const { error } = await signIn(email, password);
 
       if (error) {
-        showToast('ログインに失敗しました', 'error', {
-          description: error.message,
-        });
+        console.error('Login failed:', error);
+
+        // エラーメッセージを詳細に表示
+        let errorMessage = 'ログインに失敗しました';
+        let description = error.message;
+
+        if (error.message?.includes('Invalid login credentials')) {
+          errorMessage = 'メールアドレスまたはパスワードが正しくありません';
+          description = 'Supabaseでメール確認が必要な可能性があります。ダッシュボードで確認してください。';
+        } else if (error.message?.includes('Email not confirmed')) {
+          errorMessage = 'メールアドレスが未確認です';
+          description = '確認メールのリンクをクリックしてください';
+        }
+
+        showToast(errorMessage, 'error', { description });
         return;
       }
 

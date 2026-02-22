@@ -508,11 +508,14 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       });
     }
 
+    // 完了済みタスクを除外
+    filtered = filtered.filter((task) => !task.is_completed);
+
     // 期限切れフィルタの適用
     if (!filters.showOverdue) {
       filtered = filtered.filter((task) => {
         const deadline = new Date(task.deadline);
-        return task.is_completed || deadline.getTime() >= now.getTime();
+        return deadline.getTime() >= now.getTime();
       });
     }
 

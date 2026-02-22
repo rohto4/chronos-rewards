@@ -16,9 +16,12 @@ import { useEffect } from 'react';
  *
  * 初期レンダリング時にlocalStorageからテーマを読み込み、
  * HTML要素にdarkクラスを適用する
+ *
+ * suppressHydrationWarning により、SSRとCSRのHTML差異を許容
  */
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
+    // クライアント側でのみ実行される
     // localStorage から保存されたテーマを読み込み
     const savedTheme = localStorage.getItem('theme');
 
