@@ -142,15 +142,15 @@ export default function StatisticsPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* ヘッダー */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
             <BarChart2 className="w-7 h-7 text-blue-600" />
             統計ダッシュボード
           </h1>
 
           {/* エクスポートボタン */}
-          <div className="flex gap-2">
+          <div className="hidden md:flex gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -183,9 +183,9 @@ export default function StatisticsPage() {
       </div>
 
       {/* メインコンテンツ */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* 期間選択 */}
-        <div className="mb-6 flex gap-2">
+        <div className="mb-6 flex flex-wrap gap-2">
           <button
             onClick={() => setPeriod('week')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${

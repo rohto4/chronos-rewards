@@ -5,21 +5,87 @@
  * グローバルステート
  */
 
-// @ts-nocheck - Supabase auth-helpers type inference issue with tasks table
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase/client';
 import type {
+  Database,
   Task,
-  TaskInsert,
   TaskUpdate,
   TaskWithGenre,
   TaskFilters,
   FilterPeriod,
   RewardHistory,
+  TaskGenre,
+  TaskChecklistItem,
 } from '@/types/database';
-import { addDays, addWeeks, addMonths, addYears, startOfDay } from 'date-fns';
+import { addWeeks, addMonths, addYears, startOfDay } from 'date-fns';
 import { useUserStore } from './user-store';
 import { calculateTaskCreateStaminaCost } from '@/lib/utils/reward-utils';
+import type { PostgrestQueryBuilder } from '@supabase/postgrest-js';
+
+type TaskSelectResult = Task & {
+  genre: unknown;
+  checklist: unknown;
+};
+
+type TaskInsertPayload = Database['public']['Tables']['tasks']['Insert'];
+type TaskUpdatePayload = Database['public']['Tables']['tasks']['Update'] & Record<string, unknown>;
+
+type TasksTableSchema = {
+  Tables: {
+    tasks: {
+      Row: Task & Record<string, unknown>;
+      Insert: Database['public']['Tables']['tasks']['Insert'] & Record<string, unknown>;
+      Update: Database['public']['Tables']['tasks']['Update'] & Record<string, unknown>;
+      Relationships: never[];
+    };
+  };
+  Views: Record<string, never>;
+  Functions: Record<string, never>;
+};
+
+type TaskChecklistTableSchema = {
+  Tables: {
+    task_checklist: {
+      Row: TaskChecklistItem & Record<string, unknown>;
+      Insert: Database['public']['Tables']['task_checklist']['Insert'] & Record<string, unknown>;
+      Update: Database['public']['Tables']['task_checklist']['Update'] & Record<string, unknown>;
+      Relationships: never[];
+    };
+  };
+  Views: Record<string, never>;
+  Functions: Record<string, never>;
+};
+
+const TASK_SELECT_COLUMNS = `
+  *,
+  genre:task_genres(*),
+  checklist:task_checklist(*)
+`;
+
+const tasksTable = () =>
+  (supabase.from('tasks') as unknown) as PostgrestQueryBuilder<
+    { PostgrestVersion: '12' },
+    TasksTableSchema,
+    TasksTableSchema['Tables']['tasks'],
+    'tasks'
+  >;
+
+const taskChecklistTable = () =>
+  (supabase.from('task_checklist') as unknown) as PostgrestQueryBuilder<
+    { PostgrestVersion: '12' },
+    TaskChecklistTableSchema,
+    TaskChecklistTableSchema['Tables']['task_checklist'],
+    'task_checklist'
+  >;
+
+function isTaskGenre(value: unknown): value is TaskGenre {
+  return value != null && typeof value === 'object' && 'id' in value;
+}
+
+function isTaskChecklist(value: unknown): value is TaskChecklistItem[] {
+  return Array.isArray(value);
+}
 
 /**
  * タスクストアの状態型定義
@@ -34,7 +100,7 @@ interface TaskStore {
 
   // アクション: CRUD操作
   fetchTasks: () => Promise<void>; // タスク一覧取得
-  createTask: (task: TaskInsert) => Promise<{ task: Task; coinReward: number } | null>; // タスク作成
+  createTask: (task: TaskInsertPayload) => Promise<{ task: Task; coinReward: number } | null>; // タスク作成
   updateTask: (id: string, updates: TaskUpdate) => Promise<void>; // タスク更新
   deleteTask: (id: string) => Promise<void>; // タスク削除（論理削除）
   completeTask: (id: string) => Promise<{ crystalReward: number } | null>; // タスク完了
@@ -78,6 +144,17 @@ function getPeriodDate(period: FilterPeriod): Date {
     default:
       return addYears(today, 3);
   }
+}
+
+/**
+ * Supabaseから取得したタスク行を`TaskWithGenre`に正規化
+ */
+function normalizeTaskRow(task: TaskSelectResult): TaskWithGenre {
+  return {
+    ...task,
+    genre: isTaskGenre(task.genre) ? task.genre : null,
+    checklist: isTaskChecklist(task.checklist) ? task.checklist : [],
+  };
 }
 
 /**
@@ -125,24 +202,16 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
     try {
       // タスクをジャンル、チェックリストと一緒に取得
-      const { data: tasksData, error: tasksError } = await supabase
-        .from('tasks')
-        .select(`
-          *,
-          genre:task_genres(*),
-          checklist:task_checklist(*)
-        `)
+      const { data: tasksData, error: tasksError } = await tasksTable()
+        .select(TASK_SELECT_COLUMNS)
         .is('deleted_at', null) // 削除されていないタスクのみ
         .order('deadline', { ascending: true }); // 期限が近い順
 
       if (tasksError) throw tasksError;
 
       // データを TaskWithGenre 型に変換
-      const tasks: TaskWithGenre[] = (tasksData || []).map((task: any) => ({
-        ...task,
-        genre: task.genre || null,
-        checklist: task.checklist || [],
-      }));
+      const taskRows = (tasksData ?? []) as unknown as TaskSelectResult[];
+      const tasks: TaskWithGenre[] = taskRows.map(normalizeTaskRow);
 
       set({ tasks, isLoading: false });
       
@@ -163,7 +232,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
    * @param task 作成するタスク情報
    * @returns 作成されたタスク + コイン報酬額
    */
-  createTask: async (task) => {
+  createTask: async (task: TaskInsertPayload) => {
     set({ isLoading: true, error: null });
 
     try {
@@ -178,25 +247,33 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       }
 
       // タスク作成（DBトリガーがコイン付与＋スタミナ消費を自動実行）
-      const { data, error } = await supabase
-        .from('tasks')
-        .insert(task)
-        .select(`
-          *,
-          genre:task_genres(*),
-          checklist:task_checklist(*)
-        `)
+      const insertPayload = task as TasksTableSchema['Tables']['tasks']['Insert'];
+      const { data, error } = await tasksTable()
+        .insert(insertPayload)
+        .select(TASK_SELECT_COLUMNS)
         .single();
 
       if (error) throw error;
+      if (!data) {
+        throw new Error('タスク作成でデータが返却されませんでした');
+      }
+
+      const taskRow = data as TaskSelectResult;
 
       // 最新の報酬履歴を取得（DBトリガーで挿入された報酬）
+      const taskId = taskRow.id;
+      if (!taskId) {
+        throw new Error('未設定のタスクIDで報酬履歴をクエリできません');
+      }
+      const rewardTaskId = taskId as NonNullable<Database['public']['Tables']['reward_history']['Row']['task_id']>;
       const { data: rewardData, error: rewardError } = await supabase
         .from('reward_history')
         .select('*')
-        .eq('task_id', data.id)
-        .eq('reward_type', 'coin')
-        .eq('reason', 'task_create')
+        .match({
+          task_id: rewardTaskId,
+          reward_type: 'coin',
+          reason: 'task_create',
+        })
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
@@ -205,14 +282,11 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         console.warn('報酬履歴取得エラー:', rewardError);
       }
 
-      const coinReward = rewardData?.amount || 0;
+      const rewardRow = rewardData as RewardHistory | null;
+      const coinReward = rewardRow?.amount || 0;
 
       // ローカル状態を更新
-      const newTask: TaskWithGenre = {
-        ...data,
-        genre: data.genre || null,
-        checklist: data.checklist || [],
-      };
+      const newTask = normalizeTaskRow(taskRow);
 
       set((state) => ({
         tasks: [...state.tasks, newTask],
@@ -225,7 +299,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       // プロフィールを再取得（スタミナ＋コイン更新）
       useUserStore.getState().fetchProfile();
 
-      return { task: data, coinReward };
+      return { task: newTask, coinReward };
     } catch (error) {
       console.error('タスク作成エラー:', error);
       set({
@@ -246,28 +320,24 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const { data, error } = await supabase
-        .from('tasks')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
+      const updatePayload: TaskUpdatePayload = {
+        ...updates,
+        updated_at: new Date().toISOString(),
+      };
+      const { data, error } = await tasksTable()
+        .update(updatePayload)
         .eq('id', id)
-        .select(`
-          *,
-          genre:task_genres(*),
-          checklist:task_checklist(*)
-        `)
+        .select(TASK_SELECT_COLUMNS)
         .single();
 
       if (error) throw error;
+      if (!data) {
+        throw new Error('タスク更新でデータが返却されませんでした');
+      }
 
       // ローカル状態を更新
-      const updatedTask: TaskWithGenre = {
-        ...data,
-        genre: data.genre || null,
-        checklist: data.checklist || [],
-      };
+      const taskRow = data as TaskSelectResult;
+      const updatedTask = normalizeTaskRow(taskRow);
 
       set((state) => ({
         tasks: state.tasks.map((t) => (t.id === id ? updatedTask : t)),
@@ -294,11 +364,11 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const { error } = await supabase
-        .from('tasks')
-        .update({
-          deleted_at: new Date().toISOString(),
-        })
+      const deletePayload: TaskUpdatePayload = {
+        deleted_at: new Date().toISOString(),
+      };
+      const { error } = await tasksTable()
+        .update(deletePayload)
         .eq('id', id);
 
       if (error) throw error;
@@ -331,30 +401,32 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
     try {
       // タスク完了（DBトリガーがクリスタル付与を自動実行）
-      const { data, error } = await supabase
-        .from('tasks')
-        .update({
+      const completePayload: TaskUpdatePayload = {
           is_completed: true,
           completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        })
+      };
+      const { data, error } = await tasksTable()
+        .update(completePayload)
         .eq('id', id)
-        .select(`
-          *,
-          genre:task_genres(*),
-          checklist:task_checklist(*)
-        `)
+        .select(TASK_SELECT_COLUMNS)
         .single();
 
       if (error) throw error;
+      if (!data) {
+        throw new Error('タスク完了でデータが返却されませんでした');
+      }
 
       // 最新の報酬履歴を取得（DBトリガーで挿入された報酬）
+      const rewardTaskId = id as NonNullable<Database['public']['Tables']['reward_history']['Row']['task_id']>;
       const { data: rewardData, error: rewardError } = await supabase
         .from('reward_history')
         .select('*')
-        .eq('task_id', id)
-        .eq('reward_type', 'crystal')
-        .eq('reason', 'task_complete')
+        .match({
+          task_id: rewardTaskId,
+          reward_type: 'crystal',
+          reason: 'task_complete',
+        })
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
@@ -363,14 +435,12 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         console.warn('報酬履歴取得エラー:', rewardError);
       }
 
-      const crystalReward = rewardData?.amount || 0;
+      const rewardRow = rewardData as RewardHistory | null;
+      const crystalReward = rewardRow?.amount || 0;
 
       // ローカル状態を更新
-      const updatedTask: TaskWithGenre = {
-        ...data,
-        genre: data.genre || null,
-        checklist: data.checklist || [],
-      };
+      const taskRow = data as TaskSelectResult;
+      const updatedTask = normalizeTaskRow(taskRow);
 
       set((state) => ({
         tasks: state.tasks.map((t) => (t.id === id ? updatedTask : t)),
@@ -404,12 +474,12 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   updateTaskChecklist: async (taskId, itemId, isChecked) => {
     try {
       // task_checklistテーブルを直接更新
-      const { error } = await supabase
-        .from('task_checklist')
-        .update({
-          is_checked: isChecked,
-          updated_at: new Date().toISOString(),
-        })
+      const checklistPayload: TaskChecklistTableSchema['Tables']['task_checklist']['Update'] = {
+        is_checked: isChecked,
+        updated_at: new Date().toISOString(),
+      };
+      const { error } = await taskChecklistTable()
+        .update(checklistPayload)
         .eq('id', itemId)
         .eq('task_id', taskId);
 

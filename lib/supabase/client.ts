@@ -19,8 +19,23 @@ import type { Database } from '@/types/database';
  * const { data, error } = await supabase.from('tasks').select('*');
  * ```
  */
+const getBrowserConfig = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+
+  return { supabaseUrl, supabaseAnonKey };
+};
+
 export const createClient = () => {
-  return createClientComponentClient<Database>();
+  const { supabaseUrl, supabaseAnonKey } = getBrowserConfig();
+  return createClientComponentClient<Database>({
+    supabaseUrl,
+    supabaseKey: supabaseAnonKey,
+  });
 };
 
 // デフォルトエクスポート

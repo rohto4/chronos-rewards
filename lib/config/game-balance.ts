@@ -255,6 +255,7 @@ export function simulateStaminaRecovery(
 // 使用例・テストケース
 // ==========================================
 
+/* c8 ignore start */
 if (require.main === module) {
   console.log('=== Chronos Rewards - ゲームバランス設定テスト ===\n');
 
@@ -291,3 +292,4 @@ if (require.main === module) {
   console.log(`- + メリットあり: +${STAMINA_CONFIG.BENEFIT_COST}pt`);
   console.log(`→ 合計: ${STAMINA_CONFIG.TASK_CREATE_COST + STAMINA_CONFIG.PREREQUISITE_COST + STAMINA_CONFIG.BENEFIT_COST}pt\n`);
 }
+/* c8 ignore end */

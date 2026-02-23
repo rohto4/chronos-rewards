@@ -5,12 +5,48 @@
  * スタミナ情報を管理するグローバルステート
  */
 
-// @ts-nocheck - Supabase auth-helpers type inference issue with user_profiles table
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase/client';
-import type { UserProfile } from '@/types/database';
+import type { Database, UserProfile } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
+import type { PostgrestQueryBuilder } from '@supabase/postgrest-js';
 import { STAMINA_CONFIG } from '@/lib/config/game-balance';
+
+type UserProfileSchema = {
+  Tables: {
+    user_profiles: {
+      Row: UserProfile & Record<string, unknown>;
+      Insert: Database['public']['Tables']['user_profiles']['Insert'] & Record<string, unknown>;
+      Update: Database['public']['Tables']['user_profiles']['Update'] & Record<string, unknown>;
+      Relationships: never[];
+    };
+  };
+  Views: Record<string, never>;
+  Functions: Record<string, never>;
+};
+
+type UserProfileUpdatePayload =
+  Database['public']['Tables']['user_profiles']['Update'] &
+  Record<string, unknown>;
+
+const userProfilesTable = () =>
+  (supabase.from('user_profiles') as unknown) as PostgrestQueryBuilder<
+    { PostgrestVersion: '12' },
+    UserProfileSchema,
+    UserProfileSchema['Tables']['user_profiles'],
+    'user_profiles'
+  >;
+
+const recoverStaminaRpc = (userId: string) =>
+  (supabase as unknown as {
+    rpc: (
+      fn: 'recover_stamina',
+      args: Database['public']['Functions']['recover_stamina']['Args']
+    ) => Promise<{
+      data: Database['public']['Functions']['recover_stamina']['Returns'] | null;
+      error: unknown;
+    }>;
+  }).rpc('recover_stamina', { p_user_id: userId });
 
 /**
  * ユーザーストアの状態型定義
@@ -85,15 +121,15 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     try {
       // user_profilesテーブルからデータ取得
-      const { data, error } = await supabase
-        .from('user_profiles')
+      const { data, error } = await userProfilesTable()
         .select('*')
         .eq('id', user.id)
         .single();
 
       if (error) throw error;
+      const profileData = data as UserProfile;
 
-      set({ profile: data, isLoading: false });
+      set({ profile: profileData, isLoading: false });
     } catch (error) {
       console.error('プロフィール取得エラー:', error);
       set({
@@ -119,20 +155,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     try {
       // データベースを更新
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
+      const updatePayload: UserProfileUpdatePayload = {
+        ...updates,
+        updated_at: new Date().toISOString(),
+      };
+      const { data, error } = await userProfilesTable()
+        .update(updatePayload)
         .eq('id', user.id)
         .select()
         .single();
 
       if (error) throw error;
 
+      const profileData = data as UserProfile;
+
       // ローカル状態を更新
-      set({ profile: data, isLoading: false });
+      set({ profile: profileData, isLoading: false });
     } catch (error) {
       console.error('プロフィール更新エラー:', error);
       set({
@@ -152,9 +190,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     try {
       // PostgreSQL関数を呼び出し
-      const { data, error } = await supabase.rpc('recover_stamina', {
-        p_user_id: user.id,
-      });
+      const { data, error } = await recoverStaminaRpc(user.id);
 
       if (error) throw error;
 

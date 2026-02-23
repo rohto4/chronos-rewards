@@ -25,6 +25,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Chronos Rewards - タスク管理アプリ',
   description: '短期から超長期までのタスクを管理し、ゲーミフィケーション要素で楽しく達成',
+  manifest: '/manifest.json',
 };
 
 /**
@@ -34,7 +35,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#3B82F6',
+  themeColor: '#0f172a',
 };
 
 /**
@@ -49,6 +50,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" className="dark" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0f172a" />
+      </head>
       <body className={inter.className}>
         <ThemeProvider>
           <div className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-50">

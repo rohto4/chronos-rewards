@@ -90,7 +90,7 @@ export default function CalendarPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* ヘッダー */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <CalendarIcon className="w-7 h-7 text-blue-600" />
@@ -100,7 +100,7 @@ export default function CalendarPage() {
       </div>
 
       {/* メインコンテンツ */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 左側: カレンダー + 月間統計 */}
           <div className="lg:col-span-2 space-y-6">

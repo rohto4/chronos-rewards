@@ -1,10 +1,13 @@
-/** @type {import('next').NextConfig} */
+const withPWA = require('next-pwa');
 
+/** @type {import('next').NextConfig} */
 /**
  * Next.js設定ファイル
- * PWA対応、画像最適化、環境変数の設定を含む
+ * 画像最適化、環境変数定義、開発時にはPWA処理を無効化する
  */
-const nextConfig = {
+const isProduction = process.env.NODE_ENV === 'production';
+
+const baseConfig = {
   // React Strict Modeを有効化（開発時の潜在的な問題を検出）
   reactStrictMode: true,
 
@@ -41,4 +44,11 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+const nextPWAConfig = {
+  dest: 'public',
+  disable: !isProduction,
+  register: true,
+  skipWaiting: true,
+};
+
+module.exports = withPWA(nextPWAConfig)(baseConfig);
