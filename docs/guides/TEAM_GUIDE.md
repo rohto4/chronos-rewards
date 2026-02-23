@@ -135,6 +135,22 @@ docs/implementation/
 - 役割の明確化が必要なタスクは `agentPlan` を必ず記入
 - 省略時は `sisyphus-implementer` のみとみなす
 
+**agentPlan の命名整合ルール（重要）**:
+- 正本は `.opencode/oh-my-opencode.jsonc` の `agents` / `categories`
+- `agentPlan` に書く名前は、必ず上記キーのいずれかと完全一致させる
+- 名前を変更した場合は、同一コミットで次を同期更新する
+  - `docs/implementation/active-tasks.json`
+  - `docs/implementation/active-tasks.test.json`
+  - `docs/guides/TEAM_GUIDE.md`（この節）
+
+**現在の推奨名（本リポジトリ）**:
+- 計画: `prometheus` または `prometheus-planner`
+- 割当/進捗管理: `atlas` または `atlas-orchestrator`
+- 実装主担当: `sisyphus` または `sisyphus-implementer`
+- 設計レビュー: `oracle` または `oracle-architect`
+- テスト補助: `logic-tester` / `e2e-tester`
+- UI対応（必要時のみ）: `frontend-ui-ux-engineer`
+
 ---
 
 ## 🚦 作業開始前のルール（エージェント向け）
