@@ -76,8 +76,9 @@ describe('UI Components - Phase 1', () => {
 
     it('値が100を超えない', () => {
       const { container } = render(<Progress value={150} />);
-      const bar = container.querySelector('[role="progressbar"] > div');
-      expect(bar).toHaveStyle({ width: '100%' });
+      const bar = container.querySelector('[role="progressbar"]');
+      expect(bar).not.toBeNull();
+      expect(bar as HTMLElement).toHaveStyle({ width: '100%' });
     });
   });
 
@@ -115,7 +116,15 @@ describe('UI Components - Phase 1', () => {
     });
 
     it('文字数カウンターが表示される', () => {
-      render(<Textarea value="テスト" maxLength={100} showCount />);
+      render(
+        <Textarea
+          label="説明"
+          value="テスト"
+          maxLength={100}
+          showCount
+          onChange={() => {}}
+        />
+      );
       expect(screen.getByText('3 / 100')).toBeInTheDocument();
     });
   });
