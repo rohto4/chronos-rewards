@@ -15,9 +15,9 @@
 
 | モデル | 目標 | 主な担当 |
 | --- | --- | --- |
-| openai/gpt-5.1-codex-mini | 40〜48% | deep / logic-testing / e2e-testing / sisyphus |
+| openai/gpt-5.1-codex-mini | 40〜48% | deep / logic-testing / e2e-testing / sisyphus / explore |
 | anthropic/claude-sonnet-4-5-20250929 | 22〜30% | visual-engineering / unspecified-high / prometheus / oracle |
-| anthropic/claude-haiku-4-5-20250929 | 15〜22% | quick / writing / unspecified-low / librarian / explore |
+| anthropic/claude-haiku-4-5-20250929 | 15〜22% | quick / writing / unspecified-low / librarian |
 | openai/gpt-5.2-codex | 8〜12% | refactoring / atlas / hephaestus |
 | openai/gpt-5.2 | 1〜3% | ultrabrain |
 

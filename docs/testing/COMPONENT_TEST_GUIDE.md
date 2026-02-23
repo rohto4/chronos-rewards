@@ -54,11 +54,11 @@ afterEach(() => {
 ```json
 {
   "scripts": {
-    "test:ui": "vitest scripts/test-ui-components.ts",
-    "test:task-components": "vitest scripts/test-task-components.ts",
-    "test:animations": "vitest scripts/test-animations.ts",
-    "test:components": "vitest scripts/test-ui-components.ts scripts/test-task-components.ts scripts/test-animations.ts",
-    "test:components:watch": "vitest scripts/test-ui-components.ts scripts/test-task-components.ts scripts/test-animations.ts --watch"
+    "test:ui": "vitest scripts/test-ui-components.tsx",
+    "test:task-components": "vitest scripts/test-task-components.tsx",
+    "test:animations": "vitest scripts/test-animations.tsx",
+    "test:components": "vitest scripts/test-ui-components.tsx scripts/test-task-components.tsx scripts/test-animations.tsx",
+    "test:components:watch": "vitest scripts/test-ui-components.tsx scripts/test-task-components.tsx scripts/test-animations.tsx --watch"
   }
 }
 ```

@@ -99,10 +99,10 @@
       }
     },
     "explore": {
-      "model": "anthropic/claude-haiku-4-5-20250929",
+      "model": "openai/gpt-5.1-codex-mini",
       "temperature": 0.1,
       "fallback_models": [
-        "anthropic/claude-sonnet-4-5-20250929"
+        "openai/gpt-5.2-codex"
       ],
       "prompt_append": "あなたは高速検索エージェントです。ファイル・パターン検索のみを担当します。コードの変更は一切行わないでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
       "permission": {

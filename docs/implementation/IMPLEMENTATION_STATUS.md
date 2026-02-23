@@ -15,20 +15,16 @@
 
 ## ⚠️ 既知の問題 / 未解決
 
-1. **Supabase Auth Helpers 型推論問題**
-   - **影響範囲**: `lib/stores/*.ts` (genre-store, task-store, user-store), `components/providers/AuthProvider.tsx`
-   - **症状**: テーブル型が `never` と推論され、insert/update でTypeScriptエラー
-   - **暫定対応**: 該当ファイルに `// @ts-nocheck` を追加
-   - **根本原因**: `@supabase/auth-helpers-nextjs` v0.9.0 の型推論バグ
-   - **恒久対策**:
-     - Supabase パッケージのアップグレード
-     - または `@supabase/ssr` への移行を検討
-   - **実行時影響**: なし（型定義の問題のみ）
+1. **実DB前提の検証スクリプト（TEST-001）**
+   - **影響範囲**: `scripts/test-auth.ts`, `scripts/test-tasks.ts`, `scripts/test-genres.ts`
+   - **症状**: 認証セッションなし・テーブル未適用環境では失敗する
+   - **現状**: Vitest include の誤設定は是正済み（CLIスクリプト `.ts` を除外）
+   - **残課題**: テスト用Supabase環境（マイグレーション適用 + 認証ユーザー）を整備して再実行
 
-2. **Next.js メタデータ警告**
-   - **症状**: `themeColor` と `viewport` をmetadataからviewportに移行する警告
-   - **影響**: ビルド時の警告のみ、機能には影響なし
-   - **対応**: NEXT-001で対応予定
+2. **テストカバレッジ 100% 未達（COVERAGE-001）**
+   - **現状値**: statements 69.72%, branches 76.64%, functions 80%, lines 69.95%
+   - **主な不足領域**: `lib/config/game-balance.ts`, `components/tasks/TaskCard.tsx`, `components/tasks/ChecklistEditor.tsx`
+   - **対応方針**: ロジック単体テスト追加とコンポーネント分岐網羅を段階実施
 
 ---
 

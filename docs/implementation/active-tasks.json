@@ -30,20 +30,22 @@
       "id": "task-002",
       "title": "NEXT-001",
       "description": "Next.js metadata警告の対応",
-      "status": "pending",
-      "assignedTo": null,
+      "status": "completed",
+      "assignedTo": "atlas-orchestrator",
       "priority": "low",
       "feature": "next",
       "estimatedDuration": "0.5h",
       "agentPlan": ["sisyphus-implementer", "oracle-architect"],
-      "createdAt": "2026-02-22T00:00:00Z"
+      "createdAt": "2026-02-22T00:00:00Z",
+      "startedAt": "2026-02-23T00:00:00Z",
+      "completedAt": "2026-02-23T00:00:00Z"
     },
     {
       "id": "task-003",
       "title": "TYPE-001",
       "description": "Supabase auth-helpers 型推論バグの恒久対応",
-      "status": "pending",
-      "assignedTo": null,
+      "status": "completed",
+      "assignedTo": "atlas-orchestrator",
       "priority": "medium",
       "feature": "types",
       "estimatedDuration": "4h",
@@ -52,43 +54,50 @@
         "oracle-architect",
         "logic-tester"
       ],
-      "createdAt": "2026-02-22T00:00:00Z"
+      "createdAt": "2026-02-22T00:00:00Z",
+      "startedAt": "2026-02-23T00:00:00Z",
+      "completedAt": "2026-02-23T00:00:00Z"
     },
     {
       "id": "task-004",
       "title": "TEST-001",
-      "description": "既存テストスクリプトの実行確認と修正",
-      "status": "pending",
-      "assignedTo": null,
+      "description": "既存テストスクリプトの実行確認と修正（Vitest include 修正済み、DB認証前提スクリプトは環境依存で継続）",
+      "status": "in_progress",
+      "assignedTo": "atlas-orchestrator",
       "priority": "low",
       "feature": "tests",
       "estimatedDuration": "3h",
       "agentPlan": ["logic-tester", "oracle-architect"],
-      "createdAt": "2026-02-22T00:00:00Z"
+      "createdAt": "2026-02-22T00:00:00Z",
+      "startedAt": "2026-02-23T00:00:00Z"
     },
     {
       "id": "task-005",
       "title": "MOBILE-001",
       "description": "モバイルレスポンシブ検証と改善",
-      "status": "pending",
-      "assignedTo": null,
+      "status": "completed",
+      "assignedTo": "atlas-orchestrator",
       "priority": "medium",
       "feature": "mobile",
       "estimatedDuration": "4h",
       "agentPlan": ["frontend-ui-ux-engineer", "oracle-architect"],
-      "createdAt": "2026-02-22T00:00:00Z"
+      "createdAt": "2026-02-22T00:00:00Z",
+      "startedAt": "2026-02-23T00:00:00Z",
+      "completedAt": "2026-02-23T00:00:00Z"
     },
     {
       "id": "task-006",
       "title": "PWA-001",
       "description": "PWA機能の検証（オフライン/同期）",
-      "status": "pending",
-      "assignedTo": null,
+      "status": "completed",
+      "assignedTo": "atlas-orchestrator",
       "priority": "medium",
       "feature": "pwa",
       "estimatedDuration": "3h",
       "agentPlan": ["sisyphus-implementer", "oracle-architect"],
-      "createdAt": "2026-02-22T00:00:00Z"
+      "createdAt": "2026-02-22T00:00:00Z",
+      "startedAt": "2026-02-23T00:00:00Z",
+      "completedAt": "2026-02-23T00:00:00Z"
     },
     {
       "id": "task-007",
