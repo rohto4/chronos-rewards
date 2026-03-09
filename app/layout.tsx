@@ -5,7 +5,7 @@
  * 全ページ共通のHTML構造、メタデータ、グローバルスタイルを定義
  */
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
@@ -25,12 +25,17 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Chronos Rewards - タスク管理アプリ',
   description: '短期から超長期までのタスクを管理し、ゲーミフィケーション要素で楽しく達成',
-  themeColor: '#3B82F6',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+  manifest: '/manifest.json',
+};
+
+/**
+ * ビューポート設定
+ */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#0f172a',
 };
 
 /**
@@ -44,7 +49,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja" className="dark">
+    <html lang="ja" className="dark" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0f172a" />
+      </head>
       <body className={inter.className}>
         <ThemeProvider>
           <div className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-50">

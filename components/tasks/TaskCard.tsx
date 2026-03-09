@@ -207,7 +207,7 @@ export const TaskCard = ({
                   e.stopPropagation();
                   onComplete(task.id);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors min-h-[48px]"
               >
                 <Check className="w-4 h-4" />
                 <span>完了</span>
@@ -217,7 +217,7 @@ export const TaskCard = ({
                   e.stopPropagation();
                   onDelete(task.id);
                 }}
-                className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors"
+                className="p-3 rounded-lg hover:bg-red-50 text-red-600 transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center"
                 aria-label="削除"
               >
                 <Trash2 className="w-5 h-5" />

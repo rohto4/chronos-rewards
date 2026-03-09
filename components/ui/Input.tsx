@@ -7,7 +7,7 @@
  * - 無効化・読み取り専用状態
  */
 
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { InputHTMLAttributes, forwardRef, useId } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -39,8 +39,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
+    const generatedId = useId();
     const hasError = !!error;
-    const inputId = props.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const inputId = props.id || generatedId;
     const errorId = `${inputId}-error`;
     const helperId = `${inputId}-helper`;
 

@@ -5,10 +5,10 @@
  * グローバルステート
  */
 
-// @ts-nocheck - Supabase auth-helpers type inference issue with task_genres table
 import { create } from 'zustand';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import type { TaskGenre, TaskGenreInsert, Database } from '@/types/database';
+import { supabase } from '@/lib/supabase/client';
+import type { TaskGenre, TaskGenreInsert } from '@/types/database';
+import type { PostgrestQueryBuilder } from '@supabase/postgrest-js';
 
 /**
  * ジャンルストアの状態型定義
@@ -56,8 +56,26 @@ function getRandomColor(): string {
 /**
  * Supabaseクライアントのインスタンス
  */
-const supabase = createClientComponentClient<Database>();
+type GenreSchema = {
+  Tables: {
+    task_genres: {
+      Row: TaskGenre & Record<string, unknown>;
+      Insert: TaskGenreInsert & Record<string, unknown>;
+      Update: (Partial<TaskGenre> & Record<string, unknown>);
+      Relationships: never[];
+    };
+  };
+  Views: Record<string, never>;
+  Functions: Record<string, never>;
+};
 
+const taskGenresTable = () =>
+  (supabase.from('task_genres') as unknown) as PostgrestQueryBuilder<
+    { PostgrestVersion: '12' },
+    GenreSchema,
+    GenreSchema['Tables']['task_genres'],
+    'task_genres'
+  >;
 /**
  * ジャンルストア
  *
@@ -99,14 +117,13 @@ export const useGenreStore = create<GenreStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const { data, error } = await supabase
-        .from('task_genres')
+      const { data, error } = await taskGenresTable()
         .select('*')
         .order('usage_count', { ascending: false }); // 使用回数が多い順
 
       if (error) throw error;
 
-      set({ genres: data || [], isLoading: false });
+      set({ genres: (data as TaskGenre[]) || [], isLoading: false });
     } catch (error) {
       console.error('ジャンル取得エラー:', error);
       set({
@@ -132,21 +149,22 @@ export const useGenreStore = create<GenreStore>((set, get) => ({
         color: genre.color || getRandomColor(),
       };
 
-      const { data, error } = await supabase
-        .from('task_genres')
-        .insert(genreData)
+      const sanitizedGenreData = genreData as TaskGenreInsert & Record<string, unknown>;
+      const { data, error } = await taskGenresTable()
+        .insert(sanitizedGenreData)
         .select()
         .single();
 
       if (error) throw error;
 
       // ローカル状態を更新
+      const savedGenre = data as TaskGenre;
       set((state) => ({
-        genres: [...state.genres, data],
+        genres: [...state.genres, savedGenre],
         isLoading: false,
       }));
 
-      return data;
+      return savedGenre;
     } catch (error) {
       console.error('ジャンル作成エラー:', error);
       set({
@@ -196,8 +214,7 @@ export const useGenreStore = create<GenreStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const { data, error } = await supabase
-        .from('task_genres')
+      const { data, error } = await taskGenresTable()
         .update({
           ...updates,
           updated_at: new Date().toISOString(),
@@ -210,7 +227,7 @@ export const useGenreStore = create<GenreStore>((set, get) => ({
 
       // ローカル状態を更新
       set((state) => ({
-        genres: state.genres.map((g) => (g.id === id ? data : g)),
+        genres: state.genres.map((g) => (g.id === id ? (data as TaskGenre) : g)),
         isLoading: false,
       }));
     } catch (error) {
@@ -231,8 +248,7 @@ export const useGenreStore = create<GenreStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const { error } = await supabase
-        .from('task_genres')
+      const { error } = await taskGenresTable()
         .delete()
         .eq('id', id);
 

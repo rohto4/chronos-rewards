@@ -44,9 +44,9 @@ describe('reward-utils', () => {
     it('チェックリストが3個以上で+1', () => {
       const task: Partial<Task> = {};
       const checklist: TaskChecklistItem[] = [
-        { id: '1', task_id: 'task1', item_text: 'item1', is_checked: false, sort_order: 0, created_at: '', updated_at: '' },
-        { id: '2', task_id: 'task1', item_text: 'item2', is_checked: false, sort_order: 1, created_at: '', updated_at: '' },
-        { id: '3', task_id: 'task1', item_text: 'item3', is_checked: false, sort_order: 2, created_at: '', updated_at: '' },
+        { id: '1', task_id: 'task1', item_text: 'item1', is_checked: false, display_order: 0, created_at: '', updated_at: '' },
+        { id: '2', task_id: 'task1', item_text: 'item2', is_checked: false, display_order: 1, created_at: '', updated_at: '' },
+        { id: '3', task_id: 'task1', item_text: 'item3', is_checked: false, display_order: 2, created_at: '', updated_at: '' },
       ];
       expect(calculateDetailLevel(task, checklist)).toBe(2);
     });
@@ -65,9 +65,9 @@ describe('reward-utils', () => {
         estimated_hours: 15,
       };
       const checklist: TaskChecklistItem[] = [
-        { id: '1', task_id: 'task1', item_text: 'item1', is_checked: false, sort_order: 0, created_at: '', updated_at: '' },
-        { id: '2', task_id: 'task1', item_text: 'item2', is_checked: false, sort_order: 1, created_at: '', updated_at: '' },
-        { id: '3', task_id: 'task1', item_text: 'item3', is_checked: false, sort_order: 2, created_at: '', updated_at: '' },
+        { id: '1', task_id: 'task1', item_text: 'item1', is_checked: false, display_order: 0, created_at: '', updated_at: '' },
+        { id: '2', task_id: 'task1', item_text: 'item2', is_checked: false, display_order: 1, created_at: '', updated_at: '' },
+        { id: '3', task_id: 'task1', item_text: 'item3', is_checked: false, display_order: 2, created_at: '', updated_at: '' },
       ];
       expect(calculateDetailLevel(task, checklist)).toBe(5);
     });
@@ -231,7 +231,7 @@ describe('reward-utils', () => {
     it('チェックリストがある場合、前提条件フラグがtrue', () => {
       const task: Partial<Task> = {};
       const checklist: TaskChecklistItem[] = [
-        { id: '1', task_id: 'task1', item_text: 'item1', is_checked: false, sort_order: 0, created_at: '', updated_at: '' },
+        { id: '1', task_id: 'task1', item_text: 'item1', is_checked: false, display_order: 0, created_at: '', updated_at: '' },
       ];
       const flags = getTaskBonusFlags(task, checklist);
       expect(flags.hasPrerequisite).toBe(true);

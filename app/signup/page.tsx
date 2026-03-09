@@ -64,9 +64,30 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      await signUp(email, password);
-      showToast('アカウントを作成しました！', 'success');
-      router.push('/dashboard');
+      const { error, needsEmailConfirmation, data } = await signUp(email, password);
+
+      if (error) {
+        throw error;
+      }
+
+      // セッションが作成された場合（メール確認不要）
+      if (data?.session) {
+        showToast('アカウントを作成しました！', 'success');
+        router.push('/dashboard');
+      }
+      // メール確認が必要な場合
+      else if (needsEmailConfirmation) {
+        showToast('アカウントを作成しました', 'success', {
+          description: '開発環境のため、メール確認なしでログインできます。ログイン画面で同じメールアドレスとパスワードでログインしてください。',
+        });
+        // 2秒後にログインページへ
+        setTimeout(() => router.push('/login'), 3000);
+      }
+      // その他の場合
+      else {
+        showToast('アカウントを作成しました！', 'success');
+        router.push('/dashboard');
+      }
     } catch (error: any) {
       console.error('Signup error:', error);
       

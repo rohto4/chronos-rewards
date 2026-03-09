@@ -1,0 +1,312 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "prometheus": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.5,
+      "fallback_models": [
+        "anthropic/claude-haiku-4-5-20250929"
+      ],
+      "prompt_append": "あなたはプランナーです。コードを一切書かず、タスク分解・計画立案・サブエージェントへの委譲のみを担当してください。実装は必ず sisyphus（deep カテゴリ）に委譲し、調査は librarian に委譲してください。並列実行は控えめにして、トークン効率最重視でお願いします。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
+      "permission": {
+        "edit": "deny"
+      }
+    },
+    "prometheus-planner": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.5,
+      "fallback_models": [
+        "anthropic/claude-haiku-4-5-20250929"
+      ],
+      "prompt_append": "あなたはプランナーです。コードを一切書かず、タスク分解・計画立案・サブエージェントへの委譲のみを担当してください。実装は必ず sisyphus（deep カテゴリ）に委譲し、調査は librarian に委譲してください。並列実行は控えめにして、トークン効率最重視でお願いします。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
+      "permission": {
+        "edit": "deny"
+      }
+    },
+    "atlas": {
+      "model": "openai/gpt-5.3-codex",
+      "temperature": 0.5,
+      "fallback_models": [
+        "openai/gpt-5.1-codex-mini"
+      ],
+      "prompt_append": "あなたはオーケストレーターです。Prometheus のプランに従い、各サブエージェントへタスクを割り当て・進捗管理してください。コードを書く場合は本当に必要な最小限に留め、実装は原則 sisyphus（deep）に委譲してください。テストは logic-tester / e2e-tester を補助的に活用し、役割逸脱を防いでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "atlas-orchestrator": {
+      "model": "openai/gpt-5.3-codex",
+      "temperature": 0.5,
+      "fallback_models": [
+        "openai/gpt-5.1-codex-mini"
+      ],
+      "prompt_append": "あなたはオーケストレーターです。Prometheus のプランに従い、各サブエージェントへタスクを割り当て・進捗管理してください。コードを書く場合は本当に必要な最小限に留め、実装は原則 sisyphus（deep）に委譲してください。テストは logic-tester / e2e-tester を補助的に活用し、役割逸脱を防いでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "sisyphus": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.5,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "prompt_append": "あなたは実装とテストの主担当です。与えられたタスクをコードで完遂し、必要な型チェック・ユニット/統合テストを自律的に実行してください。調査が必要な場合のみ librarian を使い、設計変更レビューが必要な場合のみ oracle に確認してください。docs/guides/AGENT.md・DDD.md の規約を遵守してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "sisyphus-implementer": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.5,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "prompt_append": "あなたは実装とテストの主担当です。与えられたタスクをコードで完遂し、必要な型チェック・ユニット/統合テストを自律的に実行してください。調査が必要な場合のみ librarian を使い、設計変更レビューが必要な場合のみ oracle に確認してください。docs/guides/AGENT.md・DDD.md の規約を遵守してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "logic-tester": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.4,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "prompt_append": "あなたはユニット/統合テストの補助担当です。既存テスト慣習に合わせてテストケース設計・不足テスト追加・失敗要因の切り分けを行ってください。実装本体の大規模変更は行わず、必要最小限の修正に留めてください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "e2e-tester": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.4,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "prompt_append": "あなたは E2E・回帰テスト設計の補助担当です。まずテスト計画と観点を整理し、実行は必要時のみ行ってください。Playwright を用いる場合は既存シナリオとの重複を避け、追加価値があるケースに限定してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "hephaestus": {
+      "model": "openai/gpt-5.3-codex",
+      "temperature": 0.3,
+      "fallback_models": [
+        "openai/gpt-5.1-codex-mini"
+      ],
+      "prompt_append": "あなたはリファクタリング専門家です。LSP と AST-Grep を最大限活用し、動作を変えずにコード品質・保守性を向上させてください。リファクタリング前後で必ず型チェック・テストを実行し、動作が変わっていないことを確認してください。コードの圧縮・難読化は禁止です。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "refactoring-specialist": {
+      "model": "openai/gpt-5.3-codex",
+      "temperature": 0.3,
+      "fallback_models": [
+        "openai/gpt-5.1-codex-mini"
+      ],
+      "prompt_append": "あなたは既存コード整理が必要な場合のみ呼び出されるリファクタリング担当です。LSP と AST-Grep を活用し、挙動を変えずに可読性・保守性を改善してください。リファクタリング前後で型チェック・テストを必ず実施してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "librarian": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.3,
+      "fallback_models": [
+        "anthropic/claude-sonnet-4-5-20250929"
+      ],
+      "prompt_append": "あなたは調査専門家です。既存テスト慣習・関連箇所の調査を最優先に担当してください。必要時のみ公式ドキュメント参照・差分確認を行い、コード変更は一切行わないでください。調査結果は簡潔に報告してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
+      "permission": {
+        "edit": "deny"
+      }
+    },
+    "explore": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.1,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "prompt_append": "あなたは高速検索エージェントです。ファイル・パターン検索のみを担当します。コードの変更は一切行わないでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "grep": "allow",
+          "find": "allow",
+          "ls": "allow",
+          "cat": "allow"
+        }
+      }
+    },
+    "oracle": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": [
+        "anthropic/claude-haiku-4-5-20250929"
+      ],
+      "prompt_append": "あなたは設計判断レビュー専門家です。設計変更・仕様追加が発生する場合にのみレビューし、変更の妥当性・型安全性・DDD原則準拠・性能リスクを確認してください。軽微な実装修正では介入しません。docs/guides/DDD.md・tech-stack.md を参照し、設計の一貫性を保証してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "oracle-architect": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": [
+        "anthropic/claude-haiku-4-5-20250929"
+      ],
+      "prompt_append": "あなたは設計判断レビュー専門家です。設計変更・仕様追加が発生する場合にのみレビューし、変更の妥当性・型安全性・DDD原則準拠・性能リスクを確認してください。軽微な実装修正では介入しません。docs/guides/DDD.md・tech-stack.md を参照し、設計の一貫性を保証してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": [
+        "anthropic/claude-haiku-4-5-20250929"
+      ],
+      "prompt_append": "あなたはUI変更が必要な場合のみ呼び出されるフロントエンドUI/UX担当です。本テストでは原則使用しません。呼び出された場合のみ visual-engineering の範囲で見た目と操作性を改善し、ビジネスロジックには触れないでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    }
+  },
+  "categories": {
+    "deep": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.5,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "description": "自律的な深い実装・リファクタリング・複雑なロジック（sisyphus が担う）",
+      "prompt_append": "docs/guides/AGENT.md・DDD.md の規約を遵守し、型チェック・テストを必ず実行してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "refactoring": {
+      "model": "openai/gpt-5.3-codex",
+      "temperature": 0.3,
+      "fallback_models": [
+        "openai/gpt-5.1-codex-mini"
+      ],
+      "description": "LSP・AST-Grep を使った安全なリファクタリング（必要時のみ）",
+      "prompt_append": "リファクタリング前後で型チェック・テストを必ず実行し、動作が変わっていないことを確認してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "logic-testing": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.4,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "description": "単体・統合テスト（Mini 担当。6回程度失敗が続く場合は Codex に昇格）",
+      "prompt_append": "Vitest を使用してください。カバレッジ目標: utility 90%, business-logic 85%。テスト失敗時は原因を分析し、修正→再実行のループを行ってください。どうしても解決しない場合はエスカレーションしてください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "e2e-testing": {
+      "model": "openai/gpt-5.1-codex-mini",
+      "temperature": 0.4,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "description": "E2E・回帰・スナップショットテスト（Playwright 使用）",
+      "prompt_append": "Playwright を使用し、ユーザージャーニー全体を実ブラウザで検証してください。テスト失敗時はスクリーンショット・DOMスナップショットを分析し、自己修復してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "visual-engineering": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": [
+        "anthropic/claude-haiku-4-5-20250929"
+      ],
+      "description": "UI微調整・統一感是正（色・レイアウト・アニメーション・レスポンシブ）",
+      "prompt_append": "shadcn/ui と Tailwind CSS を使用してください。視覚的変更のみを担当し、API呼び出し・状態管理・ビジネスロジックには一切触れないでください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "quick": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.3,
+      "fallback_models": [
+        "anthropic/claude-sonnet-4-5-20250929"
+      ],
+      "description": "軽微な変更・タイポ修正・単一ファイルの小さな変更"
+    },
+    "writing": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.5,
+      "fallback_models": [
+        "anthropic/claude-sonnet-4-5-20250929"
+      ],
+      "description": "設計書・ドキュメント・コメントの執筆・更新（IMP-B フェーズ）",
+      "prompt_append": "docs/guides/DDD.md の規約に従い、他のエージェントが設計書だけ見て開発を進められるよう、具体的かつ自己完結した内容で記述してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    },
+    "unspecified-low": {
+      "model": "anthropic/claude-haiku-4-5-20250929",
+      "temperature": 0.5,
+      "fallback_models": [
+        "anthropic/claude-sonnet-4-5-20250929"
+      ],
+      "description": "汎用・低負荷タスク"
+    },
+    "unspecified-high": {
+      "model": "anthropic/claude-sonnet-4-5-20250929",
+      "temperature": 0.6,
+      "fallback_models": [
+        "anthropic/claude-haiku-4-5-20250929"
+      ],
+      "description": "汎用・高負荷タスク（分類できない複雑なケース）"
+    },
+    "ultrabrain": {
+      "model": "openai/gpt-5.2",
+      "temperature": 0.7,
+      "fallback_models": [
+        "openai/gpt-5.2-codex"
+      ],
+      "description": "高度な推論・最難関アーキテクチャ判断（最終手段。使用は最小限に）",
+      "prompt_append": "このカテゴリは高コストです。他のカテゴリで解決できない場合のみ使用してください。出力は日本語のみ。英語は禁止。起動時に必ず docs/README.md と docs/guides/AGENT.md を読み、必読ファイルを順に読み込んでから作業を開始してください。"
+    }
+  },
+  "sisyphus_agent": {
+    "disabled": false,
+    "default_builder_enabled": false,
+    "planner_enabled": true,
+    "replace_plan": true
+  },
+  "background_task": {
+    "defaultConcurrency": 2,
+    "staleTimeoutMs": 720000,
+    "providerConcurrency": {
+      "anthropic": 2,
+      "openai": 2
+    },
+    "modelConcurrency": {
+      "openai/gpt-5.1-codex-mini": 2,
+      "anthropic/claude-sonnet-4-5-20250929": 2,
+      "anthropic/claude-haiku-4-5-20250929": 2,
+      "openai/gpt-5.2-codex": 2,
+      "openai/gpt-5.2": 1
+    }
+  },
+  "runtime_fallback": {
+    "enabled": true,
+    "retry_on_errors": [
+      400,
+      429,
+      503,
+      529
+    ],
+    "max_fallback_attempts": 6,
+    "cooldown_seconds": 30,
+    "timeout_seconds": 60,
+    "notify_on_fallback": true
+  },
+  "disabled_hooks": [
+    "auto_resume",
+    "thinking-block-validator",
+    "empty-task-response-detector"
+  ],
+  "git_master": {
+    "commit_footer": true,
+    "include_co_authored_by": true
+  },
+  "comment_checker": {
+    "custom_prompt": "以下のコメントを評価してください:\n{{comments}}\n\nNGパターン: 冗長・自明・「AIが書いた」と分かるコメント。OKパターン: コードを読むだけでは分からない意図・背景・制約を説明するコメント。CSS関連は除外。"
+  },
+  "experimental": {
+    "aggressive_truncation": true,
+    "task_system": true,
+    "dynamic_context_pruning": {
+      "enabled": true,
+      "notification": "minimal",
+      "turn_protection": {
+        "enabled": true,
+        "turns": 3
+      },
+      "strategies": {
+        "deduplication": {
+          "enabled": true
+        },
+        "supersede_writes": {
+          "enabled": true,
+          "aggressive": false
+        },
+        "purge_errors": {
+          "enabled": true,
+          "turns": 5
+        }
+      }
+    }
+  },
+  "hashline_edit": true,
+  "tmux": {
+    "enabled": false
+  },
+  "_migrations": [
+    "model-version:openai/gpt-5.2-codex->openai/gpt-5.3-codex",
+    "model-version:openai/gpt-5.2-codex->openai/gpt-5.3-codex",
+    "model-version:openai/gpt-5.2-codex->openai/gpt-5.3-codex"
+  ]
+}

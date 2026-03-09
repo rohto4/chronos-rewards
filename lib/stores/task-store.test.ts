@@ -146,19 +146,19 @@ describe('task-store', () => {
       const defaultFilters: TaskFilters = {
         periods: [],
         genres: [],
-        showCompleted: false,
+        showOverdue: false,
       };
 
       expect(defaultFilters.periods).toEqual([]);
       expect(defaultFilters.genres).toEqual([]);
-      expect(defaultFilters.showCompleted).toBe(false);
+      expect(defaultFilters.showOverdue).toBe(false);
     });
 
     it('フィルタの更新', () => {
       const filters: TaskFilters = {
         periods: [],
         genres: [],
-        showCompleted: false,
+        showOverdue: false,
       };
 
       // 期間フィルタを追加
